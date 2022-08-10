@@ -21,7 +21,7 @@ namespace AutoPipelines
             for (int i = 0; i < number-count; i++)
             {
                 var newListItem = Activator.CreateInstance(t);
-                /*
+
                 foreach (var property in propertyList)
                 {
                     if (property.PropertyType.Equals(typeof(int)))
@@ -45,7 +45,7 @@ namespace AutoPipelines
                         property.SetValue(newListItem, 0);
                     }
                 }
-                */
+
                 list.Add((T)newListItem);
             }
             return list;
