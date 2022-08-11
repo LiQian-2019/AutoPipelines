@@ -92,6 +92,45 @@
     <Compile Include="PipeLineProperty.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="CADBlocks\GDP一般管线点.dwg" />
+    <None Include="CADBlocks\GDP上杆.dwg" />
+    <None Include="CADBlocks\GDP变压器.dwg" />
+    <None Include="CADBlocks\GDP检修井.dwg" />
+    <None Include="CADBlocks\GDP环网柜.dwg" />
+    <None Include="CADBlocks\GSP一般管线点.dwg" />
+    <None Include="CADBlocks\GSP水表井.dwg" />
+    <None Include="CADBlocks\GSP消防栓.dwg" />
+    <None Include="CADBlocks\GSP阀门井.dwg" />
+    <None Include="CADBlocks\PYP一般管线点.dwg" />
+    <None Include="CADBlocks\PYP雨水井.dwg" />
+    <None Include="CADBlocks\PYP雨水篦.dwg" />
+    <None Include="CADBlocks\QYP一般管线点.dwg" />
+    <None Include="CADBlocks\RSP一般管线点.dwg" />
+    <None Include="CADBlocks\TRP一般管线点.dwg" />
+    <None Include="CADBlocks\TRP检测井.dwg" />
+    <None Include="CADBlocks\TRP燃气柜.dwg" />
+    <None Include="CADBlocks\TRP燃气桩.dwg" />
+    <None Include="CADBlocks\TRP阀门井.dwg" />
+    <None Include="CADBlocks\WSP一般管线点.dwg" />
+    <None Include="CADBlocks\WSP污水井.dwg" />
+    <None Include="CADBlocks\XHP一般管线点.dwg" />
+    <None Include="CADBlocks\XHP交通信号灯.dwg" />
+    <None Include="CADBlocks\XHP手孔井.dwg" />
+    <None Include="CADBlocks\XHP接线箱.dwg" />
+    <None Include="CADBlocks\XXP一般管线点.dwg" />
+    <None Include="CADBlocks\XXP上杆.dwg" />
+    <None Include="CADBlocks\XXP人孔井.dwg" />
+    <None Include="CADBlocks\XXP发射塔.dwg" />
+    <None Include="CADBlocks\XXP手孔井.dwg" />
+    <None Include="CADBlocks\XXP接线箱.dwg" />
+    <None Include="CADBlocks\ZMP一般管线点.dwg" />
+    <None Include="CADBlocks\ZMP人孔井.dwg" />
+    <None Include="CADBlocks\ZMP手孔井.dwg" />
+    <None Include="CADBlocks\ZMP路灯.dwg" />
+    <None Include="CADBlocks\ZYP一般管线点.dwg" />
+    <None Include="CADBlocks\ZYP上杆.dwg" />
+    <None Include="CADBlocks\ZYP手孔井.dwg" />
+    <None Include="CADBlocks\ZYP监控器.dwg" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
