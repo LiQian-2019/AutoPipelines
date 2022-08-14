@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CADApplication = Autodesk.AutoCAD.ApplicationServices.Application;
+using Autodesk.AutoCAD.GraphicsInterface;
+using NPOI.SS.Formula.Functions;
 //using EXLApplication = NetOffice.ExcelApi.Application;
 //using NetOffice.ExcelApi;
 
@@ -18,24 +20,19 @@ namespace AutoPipelines
         //private EXLApplication excelApp = null;
         //private Workbook workbook = null;
         //private Worksheet worksheet = null;
+        private PipeConfiguration pipeConfiguration;
 
         [CommandMethod("PIPE")]
         public void Draw()
         {
-            OpenFileDialog ofd = new OpenFileDialog()
+            if (pipeConfiguration == null)
             {
-                Title = "打开属性表",
-                Filter = "Excel工作簿(*.xls,*.xlsx)|*.xls;*.xlsx",
-                InitialDirectory = @"D:\工程资料"
-            };
-            if (ofd.ShowDialog() == DialogResult.OK)
+                pipeConfiguration = new PipeConfiguration();
+                pipeConfiguration.ShowDialog();
+            }
+            else
             {
-                AutoPipe autoPipe = new AutoPipe()
-                {
-                    TabFilePathName = ofd.FileName
-                };
-                autoPipe.ReadPropertyTab();
-                autoPipe.DrawPipes();
+                pipeConfiguration.ShowDialog();
             }
         }
 
