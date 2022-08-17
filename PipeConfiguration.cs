@@ -34,6 +34,10 @@ namespace AutoPipelines
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 tabFileTxtBox.Text = ofd.FileName;
+                executeDrawBtn.Enabled = false;
+                AutoPipe = new AutoPipe() { TabFilePathName = tabFileTxtBox.Text };
+                AutoPipe.ReadPropertyTab();
+                toolStripStatusLabel1.Text = "属性表读取完成。";
             }
 
         }
@@ -45,8 +49,34 @@ namespace AutoPipelines
 
         private void executeDrawBtn_Click(object sender, EventArgs e)
         {
+            if (AutoPipe.ErrPipeInd.Any())
+            {
+                MessageBoxButtons box = MessageBoxButtons.OKCancel;
+                DialogResult result = MessageBox.Show("属性表中有错误，是否强行绘图？", "提示", box);
+                if (result == DialogResult.OK)
+                {
+                    foreach (var errorPipeInd in AutoPipe.ErrPipeInd)
+                    {
+                        switch (errorPipeInd.Value)
+                        {
+                            case 3:
+                                var errorPipe = AutoPipe.PipeTable.Find(p => p.Name == errorPipeInd.Key);
+                                errorPipe.Attachment = "";
+                                errorPipe.Attribute = "一般管线点";
+                                break;
+                            default:
+                                errorPipe = AutoPipe.PipeTable.Find(p => p.Name == errorPipeInd.Key);
+                                AutoPipe.PipeTable.Remove(errorPipe);
+                                break;
+                        }
+                    }
+                }
+                else return;
+            }
+            AutoPipe.InputConfigPara(this);
             AutoPipe.DrawPipes();
             toolStripStatusLabel1.Text = "管线图绘制完毕。";
+            toolStripProgressBar1.Value = 0;
         }
 
         private void checkTabBtn_Click(object sender, EventArgs e)
@@ -55,20 +85,16 @@ namespace AutoPipelines
                 MessageBox.Show("请输入属性表路径！");
             else
             {
-                AutoPipe = new AutoPipe(this) { TabFilePathName = tabFileTxtBox.Text };
-                AutoPipe.ReadPropertyTab();
-                toolStripProgressBar1.Value = 50;
+                AutoPipe.AddRowValue += new RowAdd(GridViewAddRow);
+                AutoPipe.AddBarValue += new BarGrow(ProgressBarGrow);
+                toolStripProgressBar1.Value = 0;
+                //ClearAllRows(checkResultDataGrid);
+                checkResultDataGrid.Rows.Clear();
                 AutoPipe.CheckPropertyTab();
-                toolStripProgressBar1.Value = 100;
+                toolStripProgressBar1.Value = 0;
 
                 executeDrawBtn.Enabled = true;
-                toolStripProgressBar1.Value = 0;
             }
-        }
-
-        private void drawPipeTextChkBox_MouseClick(object sender, MouseEventArgs e)
-        {
-
         }
 
         private void drawPipeFzlChkBox_MouseClick(object sender, MouseEventArgs e)
@@ -115,6 +141,28 @@ namespace AutoPipelines
                     ((CheckBox)item).Checked = true;
                     ((CheckBox)item).Enabled = true;
                 }
+            }
+        }
+
+        public void GridViewAddRow(string[] rowContent)
+        {
+            this.checkResultDataGrid.Rows.Add(rowContent);
+        }
+
+        public void ProgressBarGrow(int value)
+        {
+            this.toolStripProgressBar1.Value = value;
+        }
+
+        public void ClearAllRows(DataGridView gridView)
+        {
+            if (gridView.RowCount < 1) return;
+            int i = 0;
+            while (i >= 0)
+            {
+                i = gridView.RowCount - 1;
+                gridView.Rows.Remove(gridView.Rows[i]);
+                i--;
             }
         }
     }

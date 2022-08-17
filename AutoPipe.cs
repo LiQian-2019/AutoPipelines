@@ -15,9 +15,12 @@ using Autodesk.AutoCAD.Geometry;
 
 namespace AutoPipelines
 {
+    public delegate void RowAdd(string[] rowContent);
+    public delegate void BarGrow(int value);
     class AutoPipe
     {
         public List<PipeLineProperty> PipeTable { get; set; } = new List<PipeLineProperty>();
+        public List<PipeLineProperty> EndPipeTable { get; set; } = new List<PipeLineProperty>();
         public string TabFilePathName { get; set; }
         private Editor Editor { get; set; }
         private Database CadDatabase { get; set; }
@@ -25,6 +28,7 @@ namespace AutoPipelines
         private LayerTable Layers { get; set; }
         private BlockTable CadBlockTable { get; set; }
         private BlockTableRecord CadBlockTabRecord { get; set; }
+        public Dictionary<string, int> ErrPipeInd { get; set; }
 
         private List<string> PipeTypes { get; set; }
 
@@ -46,10 +50,18 @@ namespace AutoPipelines
         private bool IsDisplayPointFzl { get; set; }
         private bool IsDisplayAttachmentFzl { get; set; }
         private double[] FzlAlignMode { get; set; }
-        public AutoPipe(PipeConfiguration configForm)
-        {
-            Editor = CADApplication.DocumentManager.MdiActiveDocument.Editor;
 
+        public event RowAdd AddRowValue;
+        public event BarGrow AddBarValue;
+        public double[] Steps { get; set; } = { 0.2, 0.4, 0.6, 0.8, 0.99, 1.0 };
+        public AutoPipe()
+        {
+
+            CadDatabase = HostApplicationServices.WorkingDatabase;
+        }
+
+        public void InputConfigPara(PipeConfiguration configForm)
+        {
             IsDrawPipeName = configForm.drawPipeNameChkBox.Checked;
             IsDrawPipeLine = configForm.drawPipeLineChkBox.Checked;
             IsDrawPipeFzl = configForm.drawPipeFzlChkBox.Checked;
@@ -118,7 +130,6 @@ namespace AutoPipelines
                         }
                     }
                 }
-                Editor.WriteMessage("属性表读取完成。");
             }
         }
 
@@ -175,12 +186,11 @@ namespace AutoPipelines
         /// </summary>
         public void DrawPipes()
         {
-            CadDatabase = HostApplicationServices.WorkingDatabase;
             CadTransaction = CadDatabase.TransactionManager.StartTransaction();
-            CadBlockTable = CadTransaction.GetObject(CadDatabase.BlockTableId, OpenMode.ForRead) as BlockTable;
             CadBlockTabRecord = (BlockTableRecord)CadTransaction.GetObject(CadBlockTable[BlockTableRecord.ModelSpace], OpenMode.ForWrite);
 
             // 视角转至绘图区域
+            Editor = CADApplication.DocumentManager.MdiActiveDocument.Editor;
             ViewTableRecord viewTableRecord = Editor.GetCurrentView();
             double maxX, minX, maxY, minY;
             maxX = PipeTable.Max(p => p.X);
@@ -199,47 +209,33 @@ namespace AutoPipelines
                     CreateLayer(type);
                 Layers = CadTransaction.GetObject(CadDatabase.LayerTableId, OpenMode.ForRead) as LayerTable;
 
+                int i = 0, j = 0;
                 foreach (var pipe in PipeTable)
                 {
-                    // 绘制管点符号
                     if (IsDrawPipeName)
                     {
-                        if (string.IsNullOrEmpty(pipe.WTName)) continue;
-                        if (pipe.X == 0 || pipe.Y == 0 || pipe.H == 0) continue;
+                        // 绘制管点符号
                         CadDatabase.Clayer = Layers[pipe.PipeLineType + "P"];
                         DrawPipePoint(pipe);
 
-                    }
-
-                    // 绘制点名
-                    if (IsDrawPipeName)
-                    {
+                        // 绘制点名
                         CadDatabase.Clayer = Layers[pipe.PipeLineType + "MARK"];
                         DrawPipeName(pipe);
-
                     }
 
                     // 绘制管线及属性
-                    if (!string.IsNullOrEmpty(pipe.Connect))
+                    if (IsDrawPipeLine)
                     {
-                        try
+                        if (pipe.Connect.Any())
                         {
-                            var endPipe = PipeTable.First(p => p.WTName == pipe.Connect);
-                            if (IsDrawPipeLine)
-                            {
-                                CadDatabase.Clayer = Layers[pipe.PipeLineType + "L"];
-                                DrawPipeLine(pipe, endPipe);
-                                CadDatabase.Clayer = Layers[pipe.PipeLineType + "T"];
-                                DrawPipeText(pipe, endPipe);
-                            }
-
+                            var endPipe = EndPipeTable[i++];
+                            CadDatabase.Clayer = Layers[pipe.PipeLineType + "L"];
+                            DrawPipeLine(pipe, endPipe);
+                            CadDatabase.Clayer = Layers[pipe.PipeLineType + "T"];
+                            DrawPipeText(pipe, endPipe);
                         }
-                        catch (InvalidOperationException)
-                        {
-
-                        }
-
                     }
+
 
                     // 绘制高程注记
                     if (IsDrawPipeFzl)
@@ -258,6 +254,9 @@ namespace AutoPipelines
                             if (IsDisplayAttachmentFzl) DrawPipeFZL(pipe, pipe.WellDepth);
                         }
                     }
+
+                    if (PipeTable.IndexOf(pipe) >= PipeTable.Count() * Steps[j])
+                        AddBarValue((int)(Steps[j++] * 100));
                 }
 
                 CadTransaction.Commit();
@@ -355,32 +354,13 @@ namespace AutoPipelines
         private void DrawPipePoint(PipeLineProperty pipe)
         {
             string blockName;
-            if (!string.IsNullOrEmpty(pipe.Attachment))
+            if (pipe.Attachment.Any())
                 blockName = pipe.PipeLineType + "P" + pipe.Attachment;
-            else
+            else if (pipe.Attribute.Any())
                 blockName = pipe.PipeLineType + "P" + pipe.Attribute;
-            BlockReference br = default;
-            if (CadBlockTable.Has(blockName))
-            {
-                br = new BlockReference(new Point3d(pipe.X, pipe.Y, pipe.H), CadBlockTable[blockName]);
-            }
             else
-            {
-                var sourceDb = new Database(false, false);
-                string blockFilePathName = Path.Combine(System.Environment.CurrentDirectory, "CADBlocks", blockName + ".dwg");
-                try
-                {
-                    sourceDb.ReadDwgFile(blockFilePathName, FileShare.Read, true, "");
-                }
-                catch (System.Exception)
-                {
-                    blockName = pipe.PipeLineType + "P一般管线点";
-                    blockFilePathName = Path.Combine(System.Environment.CurrentDirectory, "CADBlocks", blockName + ".dwg");
-                    sourceDb.ReadDwgFile(blockFilePathName, FileShare.Read, true, "");
-                }
-                var btrId = CadDatabase.Insert(blockName, sourceDb, true);
-                if (!btrId.IsNull) br = new BlockReference(new Point3d(pipe.X, pipe.Y, pipe.H), btrId);
-            }
+                blockName = pipe.PipeLineType + "P一般管线点";
+            BlockReference br = new BlockReference(new Point3d(pipe.X, pipe.Y, pipe.H), CadBlockTable[blockName]);
             CadBlockTabRecord.AppendEntity(br);
             CadTransaction.AddNewlyCreatedDBObject(br, true);
         }
@@ -521,8 +501,87 @@ namespace AutoPipelines
 
         internal void CheckPropertyTab()
         {
+            using (CadTransaction = CadDatabase.TransactionManager.StartTransaction())
+            {
+                CadBlockTable = CadTransaction.GetObject(CadDatabase.BlockTableId, OpenMode.ForRead) as BlockTable;
+            }
 
             PipeTypes = PipeTable.Select(p => p.PipeLineType).Distinct().ToList().ConvertAll(t => t.ToString());
+            ErrPipeInd = new Dictionary<string, int>(); // 0-缺WTName；1-缺坐标；2-无连接点号；3-附属物/特征点缺失
+            int i = 0;
+            foreach (var pipe in PipeTable)
+            {
+                // 检查点名是否存在
+                if (string.IsNullOrWhiteSpace(pipe.WTName))
+                {
+                    ErrPipeInd.Add(pipe.Name, 0);
+                    AddRowValue(new string[] { ErrPipeInd.Count.ToString(), pipe.Name, pipe.RowInd.ToString(), "缺少物探点号" });
+                }
+                // 检查坐标是否存在
+                if (pipe.X == 0 || pipe.Y == 0 || pipe.H == 0)
+                {
+                    ErrPipeInd.Add(pipe.Name, 1);
+                    AddRowValue(new string[] { ErrPipeInd.Count.ToString(), pipe.Name, pipe.RowInd.ToString(), "缺少坐标" });
+                }
+                // 检查连接点号是否存在
+                if (pipe.Connect.Any())
+                {
+                    try
+                    {
+                        var endPipe = PipeTable.First(p => p.WTName == pipe.Connect);
+                        EndPipeTable.Add(endPipe);
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        ErrPipeInd.Add(pipe.Name, 2);
+                        AddRowValue(new string[] { ErrPipeInd.Count.ToString(), pipe.Name, pipe.RowInd.ToString(), "未找到与之相连的点号" });
+                    }
+                }
+                // 检查特征点、附属物是否存在
+                string blockName, blockFilePathName;
+                var sourceDb = new Database(false, false);
+                if (pipe.Attachment.Any())
+                {
+                    blockName = pipe.PipeLineType + "P" + pipe.Attachment;
+                    if (!CadBlockTable.Has(blockName))
+                        try
+                        {
+                            blockFilePathName = Path.Combine(System.Environment.CurrentDirectory, "CADBlocks", blockName + ".dwg");
+                            sourceDb.ReadDwgFile(blockFilePathName, FileShare.Read, true, "");
+                            CadDatabase.Insert(blockName, sourceDb, true);
+                        }
+                        catch (Exception)
+                        {
+                            ErrPipeInd.Add(pipe.Name, 3);
+                            AddRowValue(new string[] { ErrPipeInd.Count.ToString(), pipe.Name, pipe.RowInd.ToString(), string.Format("未找到{0}对应的块文件", pipe.Attachment) });
+                        }
+                }
+                else if (pipe.Attribute.Any())
+                {
+                    blockName = pipe.PipeLineType + "P" + pipe.Attribute;
+                    if (!CadBlockTable.Has(blockName))
+                        try
+                        {
+                            blockFilePathName = Path.Combine(System.Environment.CurrentDirectory, "CADBlocks", blockName + ".dwg");
+                            sourceDb.ReadDwgFile(blockFilePathName, FileShare.Read, true, "");
+                            CadDatabase.Insert(blockName, sourceDb, true);
+                        }
+                        catch (Exception)
+                        {
+                            ErrPipeInd.Add(pipe.Name, 3);
+                            AddRowValue(new string[] { ErrPipeInd.Count.ToString(), pipe.Name, pipe.RowInd.ToString(), string.Format("未找到{0}对应的块文件", pipe.Attribute) });
+                        }
+                }
+                else
+                {
+                    ErrPipeInd.Add(pipe.Name, 3);
+                    AddRowValue(new string[] { ErrPipeInd.Count.ToString(), pipe.Name, pipe.RowInd.ToString(), "缺少特征点/附属物名称" });
+                }
+
+                if (PipeTable.IndexOf(pipe) >= PipeTable.Count() * Steps[i])
+                    AddBarValue((int)(Steps[i++] * 100));
+            }
+            return;
         }
     }
 }
