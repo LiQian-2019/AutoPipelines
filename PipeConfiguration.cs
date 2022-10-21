@@ -1,10 +1,13 @@
-﻿using System;
+﻿using Autodesk.AutoCAD.DatabaseServices;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -12,7 +15,7 @@ namespace AutoPipelines
 {
     public partial class PipeConfiguration : Form
     {
-        AutoPipe AutoPipe;
+        readonly AutoPipe AutoPipe;
 
         public PipeConfiguration()
         {
@@ -21,6 +24,7 @@ namespace AutoPipelines
             lineStyleCmbBox.SelectedIndex = 0;
             fzlPosCmbBox.SelectedIndex = 1;
             toolStripStatusLabel1.Text = "lq5991@csepdi.com";
+            AutoPipe = new AutoPipe();
         }
 
         private void openTabBtn_Click(object sender, EventArgs e)
@@ -35,7 +39,7 @@ namespace AutoPipelines
             {
                 tabFileTxtBox.Text = ofd.FileName;
                 executeDrawBtn.Enabled = false;
-                AutoPipe = new AutoPipe() { TabFilePathName = tabFileTxtBox.Text };
+                AutoPipe.TabFilePathName = tabFileTxtBox.Text;
                 AutoPipe.ReadPropertyTab();
                 toolStripStatusLabel1.Text = "属性表读取完成。";
             }
@@ -49,25 +53,27 @@ namespace AutoPipelines
 
         private void executeDrawBtn_Click(object sender, EventArgs e)
         {
-            if (AutoPipe.ErrPipeInd.Any())
+            if (AutoPipe.ErrPipeInf.Any())
             {
                 MessageBoxButtons box = MessageBoxButtons.OKCancel;
                 DialogResult result = MessageBox.Show("属性表中有错误，是否强行绘图？", "提示", box);
                 if (result == DialogResult.OK)
                 {
-                    foreach (var errorPipeInd in AutoPipe.ErrPipeInd)
+                    foreach (var errPipeInf in AutoPipe.ErrPipeInf)
                     {
-                        switch (errorPipeInd.Value)
+                        if (errPipeInf[3].EndsWith("块文件") || errPipeInf[3].EndsWith("名称"))
                         {
-                            case 3:
-                                var errorPipe = AutoPipe.PipeTable.Find(p => p.Name == errorPipeInd.Key);
-                                errorPipe.Attachment = "";
-                                errorPipe.Attribute = "一般管线点";
-                                break;
-                            default:
-                                errorPipe = AutoPipe.PipeTable.Find(p => p.Name == errorPipeInd.Key);
-                                AutoPipe.PipeTable.Remove(errorPipe);
-                                break;
+                            var errorPipe = AutoPipe.PipeTable.Find(p => p.Name == errPipeInf[1]);
+                            errorPipe.Attachment = "";
+                            errorPipe.Attribute = "一般管线点";
+                            string blockName = errorPipe.PipeLineType + "P一般管线点";
+                            if (AutoPipe.CadBlockTable[blockName].IsNull)
+                                AutoPipe.InsertCADBlock(blockName);
+                        }
+                        else
+                        {
+                            var errorPipe = AutoPipe.PipeTable.Find(p => p.Name == errPipeInf[1]);
+                            AutoPipe.PipeTable.Remove(errorPipe);
                         }
                     }
                 }
