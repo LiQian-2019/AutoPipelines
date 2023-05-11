@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AutoPipelines
 {
-    class PipeLineProperty
+    public class PipeLineProperty
     {
         public ushort RowInd { get; set; }
         public string Name { get; set; }
@@ -36,9 +36,10 @@ namespace AutoPipelines
         public string RoadName { get; set; }
         public string Comment { get; set; }
         public string Tag { get; set; }
+
     }
 
-    enum PipeLineType
+    public enum PipeLineType
     {
         PY,
         WS,

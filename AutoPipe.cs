@@ -234,7 +234,6 @@ namespace AutoPipelines
                         }
                     }
 
-
                     // 绘制高程注记
                     if (IsDrawPipeFzl)
                     {
@@ -258,7 +257,7 @@ namespace AutoPipelines
                 }
 
                 CadTransaction.Commit();
-                Autodesk.AutoCAD.ApplicationServices.Application.UpdateScreen();
+                Autodesk.AutoCAD.ApplicationServices.Core.Application.UpdateScreen();
             }
 
             CadBlockTabRecord.Dispose();
@@ -368,6 +367,8 @@ namespace AutoPipelines
             BlockReference br = new BlockReference(new Point3d(pipe.X, pipe.Y, pipe.H), CadBlockTable[blockName]);
             CadBlockTabRecord.AppendEntity(br);
             CadTransaction.AddNewlyCreatedDBObject(br, true);
+
+            br.Id.AddXrecord(br.ObjectId.ToString(), pipe.toTypedValueList());
         }
 
         /// <summary>
@@ -565,7 +566,7 @@ namespace AutoPipelines
                     }
                 }
                 // 检查特征点、附属物是否存在
-                string blockName, blockFilePathName;
+                string blockName;
                 if (pipe.Attachment.Any())
                 {
                     blockName = pipe.PipeLineType + "P" + pipe.Attachment;

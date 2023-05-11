@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using CADApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 using Autodesk.AutoCAD.GraphicsInterface;
 using NPOI.SS.Formula.Functions;
+using Autodesk.AutoCAD.DatabaseServices;
+using Autodesk.AutoCAD.Geometry;
 //using EXLApplication = NetOffice.ExcelApi.Application;
 //using NetOffice.ExcelApi;
 
@@ -35,6 +37,74 @@ namespace AutoPipelines
                 pipeConfiguration.ShowDialog();
             }
         }
+
+        [CommandMethod("DISPXREC")]
+        public void DispXrec()
+        {
+            Document doc = CADApplication.DocumentManager.MdiActiveDocument;
+            Database db = doc.Database;
+            Editor ed = doc.Editor;
+            PromptEntityOptions opt = new PromptEntityOptions("请选择管点块");
+            opt.SetRejectMessage("\n选择的不是管点块，请重新选择！");
+            opt.AddAllowedClass(typeof(BlockReference), true);
+            PromptEntityResult entResult = ed.GetEntity(opt);
+            if (entResult.Status != PromptStatus.OK) return;
+            ObjectId id = entResult.ObjectId;
+            using (Transaction trans = db.TransactionManager.StartTransaction())
+            {
+                ed.WriteMessage("\n" + id.GetXrecord(entResult.ObjectId.ToString()).AsArray()[15].Value.ToString());
+            }
+        }
+
+        [CommandMethod("FLAG")]
+        public void DrawFlag()
+        {
+            Document doc = CADApplication.DocumentManager.MdiActiveDocument;
+            Database db = doc.Database;
+            Editor ed = doc.Editor;
+
+            PromptEntityOptions opt = new PromptEntityOptions("请选择管点块");
+            opt.SetRejectMessage("\n选择的不是管点块，请重新选择！");
+            opt.AddAllowedClass(typeof(BlockReference), true);
+            PromptEntityResult entResult = ed.GetEntity(opt);
+            if (entResult.Status != PromptStatus.OK) return;
+            ObjectId id = entResult.ObjectId;
+            using (Transaction trans = db.TransactionManager.StartTransaction())
+            {
+                BlockTable bt = (BlockTable)db.BlockTableId.GetObject(OpenMode.ForWrite);
+                BlockTableRecord btr = trans.GetObject(bt[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
+                BlockReference br = trans.GetObject(id, OpenMode.ForRead) as BlockReference;
+                LayerTable layers = trans.GetObject(db.LayerTableId, OpenMode.ForRead) as LayerTable;
+                try
+                {
+                    db.Clayer = layers[br.Layer.TrimEnd('P') + "FZL"];
+                    // 设置高程注记文字
+                    string attachment, text1, text2;
+                    text2 = id.GetXrecord(id.ToString()).AsArray()[9].Value.ToString();
+                    attachment = id.GetXrecord(id.ToString()).AsArray()[6].Value.ToString();
+                    if (attachment != "")
+                        text1 = (Convert.ToDouble(text2) - Convert.ToDouble(id.GetXrecord(id.ToString()).AsArray()[12].Value.ToString())).ToString();
+                    else
+                        text1 = (Convert.ToDouble(text2) - Convert.ToDouble(id.GetXrecord(id.ToString()).AsArray()[13].Value.ToString())).ToString();
+                    // 实现拖拽效果
+                    DrawFZLJig drawFZLJig = new DrawFZLJig(br.Position, text1, text2);
+                    PromptResult pr = ed.Drag(drawFZLJig);
+                    if (pr.Status == PromptStatus.OK)
+                    {
+                        btr.AppendEntity(drawFZLJig.M_PolyLine);
+                        btr.AppendEntity(drawFZLJig.FzlTpText);
+                        btr.AppendEntity(drawFZLJig.FzlBtText);
+                        trans.AddNewlyCreatedDBObject(drawFZLJig.M_PolyLine, true);
+                        trans.AddNewlyCreatedDBObject(drawFZLJig.FzlTpText, true);
+                        trans.AddNewlyCreatedDBObject(drawFZLJig.FzlBtText, true);
+                        trans.Commit();
+                    }
+                }
+                catch { }
+            }
+
+        }
+
 
         //private void ReadPropertyTab(string fileName)
         //{
