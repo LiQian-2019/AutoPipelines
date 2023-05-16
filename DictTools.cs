@@ -70,6 +70,19 @@ namespace AutoPipelines
             return xrecord.Data;
         }
 
+        public static ResultBuffer GetXrecord(this ObjectId id)
+        {
+            DBObject obj = id.GetObject(OpenMode.ForRead);
+            string searchKey = id.ToString();
+            ObjectId dictId = obj.ExtensionDictionary;
+            if (dictId.IsNull) return null;
+            DBDictionary dict = (DBDictionary)dictId.GetObject(OpenMode.ForRead);
+            if (!dict.Contains(searchKey)) return null;
+            ObjectId xrecordId = dict.GetAt(searchKey);
+            Xrecord xrecord = (Xrecord)xrecordId.GetObject(OpenMode.ForRead);
+            return xrecord.Data;
+        }
+
         //  替换扩展记录
         public static TypedValueList ModXrecord(this ObjectId id, string searchKey, TypedValueList values)
         {

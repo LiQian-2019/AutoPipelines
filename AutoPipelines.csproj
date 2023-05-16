@@ -84,8 +84,9 @@
     <Compile Include="AutoPipe.cs" />
     <Compile Include="DictTools.cs" />
     <Compile Include="DrawFZLJig.cs" />
-    <Compile Include="ListInit.cs" />
-    <Compile Include="ListTool.cs" />
+    <Compile Include="DrawTableJig.cs" />
+    <Compile Include="ListTools.cs" />
+    <Compile Include="TypedValueList.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="PipeConfiguration.cs">
       <SubType>Form</SubType>
@@ -96,6 +97,7 @@
     <Compile Include="PipeXRecord.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PipeLineProperty.cs" />
+    <Compile Include="Tools.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

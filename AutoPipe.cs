@@ -284,6 +284,7 @@ namespace AutoPipelines
                 case "XX": colorNumber = 3; break;
                 case "ZY": colorNumber = 3; break;
                 case "RS": colorNumber = 30; break;
+                case "QT":colorNumber = 8; break;
                 default:
                     colorNumber = 7;
                     break;
@@ -368,7 +369,7 @@ namespace AutoPipelines
             CadBlockTabRecord.AppendEntity(br);
             CadTransaction.AddNewlyCreatedDBObject(br, true);
 
-            br.Id.AddXrecord(br.ObjectId.ToString(), pipe.toTypedValueList());
+            br.Id.AddXrecord(br.ObjectId.ToString(), pipe.ToTypedValueList());
         }
 
         /// <summary>
@@ -405,6 +406,8 @@ namespace AutoPipelines
             pline.ConstantWidth = ConstWidth;
             CadBlockTabRecord.AppendEntity(pline);
             CadTransaction.AddNewlyCreatedDBObject(pline, true);
+
+            pline.Id.AddXrecord(pline.ObjectId.ToString(), pipe.ToTypedValueList(method: "line"));
         }
 
         /// <summary>
@@ -609,7 +612,7 @@ namespace AutoPipelines
 
         internal void InsertCADBlock(string blockName)
         {
-            string blockFilePathName = Path.Combine(System.Environment.CurrentDirectory, "CADBlocks", blockName + ".dwg");
+            string blockFilePathName = Path.Combine(Environment.CurrentDirectory, "CADBlocks", blockName + ".dwg");
             var sourceDb = new Database(false, false);
             sourceDb.ReadDwgFile(blockFilePathName, FileShare.Read, true, "");
             CadDatabase.Insert(blockName, sourceDb, true);

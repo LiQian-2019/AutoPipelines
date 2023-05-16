@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Autodesk.AutoCAD.DatabaseServices;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AutoPipelines
 {
-    public static class  ListInit
+    public static class  ListTools
     {
         public static IList<T> Init<T>(this IList<T> list, int number)
         {
@@ -49,6 +50,15 @@ namespace AutoPipelines
                 list.Add((T)newListItem);
             }
             return list;
+        }
+
+        public static IEnumerable<Entity> Filter1(this IEnumerable<Entity> oldEntities)
+        {
+            var newEntities = from e in oldEntities
+                              where e is Polyline
+                              where !e.Layer.EndsWith("FZL")
+                              select e;
+            return newEntities;
         }
     }
 }

@@ -8,44 +8,65 @@ using System.Threading.Tasks;
 namespace AutoPipelines
 {
     public static class PipeXRecord
-    {        
-        public static TypedValueList toTypedValueList(this PipeLineProperty plp)
+    {
+        public static TypedValueList ToTypedValueList(this PipeLineProperty plp, string method = "all")
         {
-            TypedValueList typedValues = new TypedValueList
+            TypedValueList typedValues;
+            switch (method)
             {
-                {DxfCode.Int32, plp.RowInd},
-                {DxfCode.Text, plp.Name},
-                {DxfCode.Text, plp.WTName},
-                {DxfCode.Int32, (int)plp.PipeLineType},
-                {DxfCode.Text, plp.Connect},
-                {DxfCode.Text, plp.Attribute},
-                {DxfCode.Text, plp.Attachment},
-                {DxfCode.Real, plp.X},
-                {DxfCode.Real, plp.Y},
-                {DxfCode.Real, plp.H},
-                {DxfCode.Real, plp.SPH},
-                {DxfCode.Real, plp.EPH},
-                {DxfCode.Real, plp.WellDepth},
-                {DxfCode.Real, plp.SPDepth},
-                {DxfCode.Real, plp.EPDepth},
-                {DxfCode.Text, plp.Size},
-                {DxfCode.Text, plp.Material},
-                {DxfCode.Text, plp.Pressure},
-                {DxfCode.Text, plp.Voltage},
-                {DxfCode.Int32, plp.TotalBHNum},
-                {DxfCode.Int32, plp.UsedBHNum},
-                {DxfCode.Int32, plp.CableNum},
-                {DxfCode.Text, plp.Company},
-                {DxfCode.Text, plp.BuryMethod},
-                {DxfCode.Text, plp.BuryDate},
-                {DxfCode.Text, plp.RoadName},
-                {DxfCode.Text, plp.Comment},
-                {DxfCode.Text, plp.Tag},
-            };
-            return typedValues;
+                case "all":
+                    typedValues = new TypedValueList
+                {
+                    {DxfCode.Int32, plp.RowInd},
+                    {DxfCode.Text, plp.Name},
+                    {DxfCode.Text, plp.WTName},
+                    {DxfCode.Int32, (int)plp.PipeLineType},
+                    {DxfCode.Text, plp.Connect},
+                    {DxfCode.Text, plp.Attribute},
+                    {DxfCode.Text, plp.Attachment},
+                    {DxfCode.Real, plp.X},
+                    {DxfCode.Real, plp.Y},
+                    {DxfCode.Real, plp.H},
+                    {DxfCode.Real, plp.SPH},
+                    {DxfCode.Real, plp.EPH},
+                    {DxfCode.Real, plp.WellDepth},
+                    {DxfCode.Real, plp.SPDepth},
+                    {DxfCode.Real, plp.EPDepth},
+                    {DxfCode.Text, plp.Size},
+                    {DxfCode.Text, plp.Material},
+                    {DxfCode.Text, plp.Pressure},
+                    {DxfCode.Text, plp.Voltage},
+                    {DxfCode.Int32, plp.TotalBHNum},
+                    {DxfCode.Int32, plp.UsedBHNum},
+                    {DxfCode.Int32, plp.CableNum},
+                    {DxfCode.Text, plp.Company},
+                    {DxfCode.Text, plp.BuryMethod},
+                    {DxfCode.Text, plp.BuryDate},
+                    {DxfCode.Text, plp.RoadName},
+                    {DxfCode.Text, plp.Comment},
+                    {DxfCode.Text, plp.Tag},
+                };
+                    return typedValues;
+                case "line":
+                    typedValues = new TypedValueList
+                    {
+                    {DxfCode.Int32, (int)plp.PipeLineType},
+                    {DxfCode.Real, plp.SPDepth},
+                    {DxfCode.Real, plp.EPDepth},
+                    {DxfCode.Text, plp.Size},
+                    {DxfCode.Text, plp.Material},
+                    {DxfCode.Text, plp.Pressure},
+                    {DxfCode.Text, plp.Voltage},
+                    {DxfCode.Text, plp.BuryMethod},
+                    {DxfCode.Text, plp.Company},
+                    };
+                    return typedValues;
+                default:
+                    return null;
+            }
         }
 
-        public static PipeLineProperty toPipeLineProperty(this TypedValueList tv)
+        public static PipeLineProperty ToPipeLineProperty(this TypedValueList tv)
         {
             PipeLineProperty pipeLine = new PipeLineProperty()
             {
@@ -81,6 +102,6 @@ namespace AutoPipelines
             return pipeLine;
         }
 
-
     }
+
 }

@@ -12,6 +12,8 @@ using Autodesk.AutoCAD.GraphicsInterface;
 using NPOI.SS.Formula.Functions;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
+using Autodesk.AutoCAD.Colors;
+using Polyline = Autodesk.AutoCAD.DatabaseServices.Polyline;
 //using EXLApplication = NetOffice.ExcelApi.Application;
 //using NetOffice.ExcelApi;
 
@@ -38,21 +40,74 @@ namespace AutoPipelines
             }
         }
 
-        [CommandMethod("DISPXREC")]
-        public void DispXrec()
+        [CommandMethod("SLICETABLE")]
+        public void SliceTable()
         {
             Document doc = CADApplication.DocumentManager.MdiActiveDocument;
             Database db = doc.Database;
             Editor ed = doc.Editor;
-            PromptEntityOptions opt = new PromptEntityOptions("请选择管点块");
-            opt.SetRejectMessage("\n选择的不是管点块，请重新选择！");
-            opt.AddAllowedClass(typeof(BlockReference), true);
-            PromptEntityResult entResult = ed.GetEntity(opt);
-            if (entResult.Status != PromptStatus.OK) return;
-            ObjectId id = entResult.ObjectId;
             using (Transaction trans = db.TransactionManager.StartTransaction())
             {
-                ed.WriteMessage("\n" + id.GetXrecord(entResult.ObjectId.ToString()).AsArray()[15].Value.ToString());
+                LayerTable lt = (LayerTable)trans.GetObject(db.LayerTableId, OpenMode.ForWrite);
+                if (!lt.Has("BMT"))
+                {
+                    LayerTableRecord ltr = new LayerTableRecord
+                    {
+                        Name = "BMT",
+                        Color = Color.FromColorIndex(ColorMethod.ByColor, 0),
+                    };
+                    lt.Add(ltr);
+                    trans.AddNewlyCreatedDBObject(ltr, true);
+                }
+                db.Clayer = lt["BMT"];
+                trans.Commit();
+            }
+            PromptPointOptions optPoint = new PromptPointOptions("\n请输入第一个点：");
+            PromptPointResult resPoint = ed.GetPoint(optPoint);
+            if (resPoint.Status == PromptStatus.Cancel) return;
+            if (resPoint.Status == PromptStatus.OK)
+            {
+                Point3d ptStart, ptEnd;
+                ptStart = resPoint.Value;
+                PromptPointOptions optPtKey = new PromptPointOptions("\n请输入下一个点：")
+                {
+                    UseBasePoint = true,
+                    BasePoint = ptStart
+                };
+                PromptPointResult resKey = ed.GetPoint(optPtKey);
+                ptEnd = resKey.Value;
+                Line line = new Line(ptStart, ptEnd);
+                db.AddToModelSpace(line);
+                Point3dCollection fence = new Point3dCollection(new Point3d[] { ptStart, ptEnd });
+                PromptSelectionResult result = doc.Editor.SelectFence(fence);
+                List<Entity> entities = new List<Entity>();
+                if (result.Status == PromptStatus.OK)
+                {
+                    using (Transaction trans = doc.TransactionManager.StartTransaction())
+                    {
+                        foreach (var id in result.Value.GetObjectIds())
+                            entities.Add(trans.GetObject(id, OpenMode.ForRead) as Entity);
+                        entities = entities.Take(entities.Count - 1).Filter1().ToList();
+                        TypedValueList[] values = new TypedValueList[entities.Count];
+                        for (int i = 0; i < values.Length; i++)
+                        {
+                            if (entities[i].ObjectId.GetXrecord().AsArray().Any())
+                                values[i] = new TypedValueList(entities[i].ObjectId.GetXrecord().AsArray());
+                        }
+                        DrawTableJig drawTableJig = new DrawTableJig(ptEnd, values);
+                        PromptResult pr = ed.Drag(drawTableJig);
+                        if(pr.Status == PromptStatus.OK)
+                        {
+                            BlockTable bt = (BlockTable)db.BlockTableId.GetObject(OpenMode.ForWrite);
+                            BlockTableRecord btr = (BlockTableRecord)trans.GetObject(bt[BlockTableRecord.ModelSpace], OpenMode.ForWrite);
+                            btr.AppendEntity(drawTableJig.TableLine);
+                            btr.AppendEntity(drawTableJig.TextTable);
+                            trans.AddNewlyCreatedDBObject(drawTableJig.TableLine, true);
+                            trans.AddNewlyCreatedDBObject(drawTableJig.TextTable, true);
+                        }
+                        trans.Commit();
+                    }
+                }
             }
         }
 
@@ -80,12 +135,12 @@ namespace AutoPipelines
                     db.Clayer = layers[br.Layer.TrimEnd('P') + "FZL"];
                     // 设置高程注记文字
                     string attachment, text1, text2;
-                    text2 = id.GetXrecord(id.ToString()).AsArray()[9].Value.ToString();
-                    attachment = id.GetXrecord(id.ToString()).AsArray()[6].Value.ToString();
+                    text2 = id.GetXrecord().AsArray()[9].Value.ToString();
+                    attachment = id.GetXrecord().AsArray()[6].Value.ToString();
                     if (attachment != "")
-                        text1 = (Convert.ToDouble(text2) - Convert.ToDouble(id.GetXrecord(id.ToString()).AsArray()[12].Value.ToString())).ToString();
+                        text1 = (Convert.ToDouble(text2) - Convert.ToDouble(id.GetXrecord().AsArray()[12].Value.ToString())).ToString();
                     else
-                        text1 = (Convert.ToDouble(text2) - Convert.ToDouble(id.GetXrecord(id.ToString()).AsArray()[13].Value.ToString())).ToString();
+                        text1 = (Convert.ToDouble(text2) - Convert.ToDouble(id.GetXrecord().AsArray()[13].Value.ToString())).ToString();
                     // 实现拖拽效果
                     DrawFZLJig drawFZLJig = new DrawFZLJig(br.Position, text1, text2);
                     PromptResult pr = ed.Drag(drawFZLJig);
@@ -97,10 +152,10 @@ namespace AutoPipelines
                         trans.AddNewlyCreatedDBObject(drawFZLJig.M_PolyLine, true);
                         trans.AddNewlyCreatedDBObject(drawFZLJig.FzlTpText, true);
                         trans.AddNewlyCreatedDBObject(drawFZLJig.FzlBtText, true);
-                        trans.Commit();
                     }
                 }
-                catch { }
+                catch { return; }
+              trans.Commit();
             }
 
         }
