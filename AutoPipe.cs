@@ -12,6 +12,8 @@ using NPOI.XSSF.UserModel;
 using NPOI.HSSF.UserModel;
 using Autodesk.AutoCAD.Colors;
 using Autodesk.AutoCAD.Geometry;
+using System.Windows.Forms;
+using CellType = NPOI.SS.UserModel.CellType;
 
 namespace AutoPipelines
 {
@@ -124,7 +126,9 @@ namespace AutoPipelines
                         sheet = workbook.GetSheetAt(i);
                         if (sheet != null && sheet.LastRowNum > 0)
                         {
-                            PipeTable.AddRange(ReadSheetPipes(sheet));
+                            IRow row = sheet.GetRow(0);
+                            if (row.Cells[0].StringCellValue.Equals("图上点号")) 
+                                PipeTable.AddRange(ReadSheetPipes(sheet));
                         }
                     }
                 }
@@ -141,40 +145,54 @@ namespace AutoPipelines
             List<PipeLineProperty> pipeEachSheet = new List<PipeLineProperty>();
             int irow = 1;
             IRow row = sheet.GetRow(irow);
-            while (row != null && row.GetCell(0).CellType != NPOI.SS.UserModel.CellType.Blank)
+            while (row != null && row.GetCell(0).CellType != CellType.Blank)
             {
-                var pipe = new PipeLineProperty
+                for (int columnIndex = 0; columnIndex < 25; columnIndex++)
                 {
-                    RowInd = (ushort)(row.RowNum+1),
-                    Name = row.GetCell(0) == null ? "" : row.GetCell(0).StringCellValue,
-                    WTName = row.GetCell(1) == null ? "" : row.GetCell(1).StringCellValue,
-                    Connect = row.GetCell(2) == null ? "" : row.GetCell(2).StringCellValue,
-                    Attribute = row.GetCell(3) == null ? "" : row.GetCell(3).StringCellValue,
-                    Attachment = row.GetCell(4) == null ? "" : row.GetCell(4).StringCellValue,
-                    X = row.GetCell(5) == null ? 0 : row.GetCell(5).NumericCellValue,
-                    Y = row.GetCell(6) == null ? 0 : row.GetCell(6).NumericCellValue,
-                    H = row.GetCell(7) == null ? 0 : row.GetCell(7).NumericCellValue,
-                    SPH = row.GetCell(8) == null ? 0 : row.GetCell(8).NumericCellValue,
-                    EPH = row.GetCell(9) == null ? 0 : row.GetCell(9).NumericCellValue,
-                    WellDepth = row.GetCell(10) == null ? 0 : row.GetCell(10).NumericCellValue,
-                    SPDepth = row.GetCell(11) == null ? 0 : row.GetCell(11).NumericCellValue,
-                    EPDepth = row.GetCell(12) == null ? 0 : row.GetCell(12).NumericCellValue,
-                    Size = row.GetCell(13) == null ? "" : row.GetCell(13).ToString(),
-                    Material = row.GetCell(14) == null ? "" : row.GetCell(14).StringCellValue,
-                    Pressure = row.GetCell(15) == null ? "" : row.GetCell(15).StringCellValue,
-                    Voltage = row.GetCell(16) == null ? "" : row.GetCell(16).ToString(),
-                    TotalBHNum = row.GetCell(17) == null ? (ushort)0 : (ushort)row.GetCell(17).NumericCellValue,
-                    UsedBHNum = row.GetCell(18) == null ? (ushort)0 : (ushort)row.GetCell(18).NumericCellValue,
-                    CableNum = row.GetCell(19) == null ? (ushort)0 : (ushort)row.GetCell(19).NumericCellValue,
-                    Company = row.GetCell(20) == null ? "" : row.GetCell(20).StringCellValue,
-                    BuryMethod = row.GetCell(21) == null ? "" : row.GetCell(21).StringCellValue,
-                    BuryDate = row.GetCell(22) == null ? "" : row.GetCell(22).StringCellValue,
-                    RoadName = row.GetCell(23) == null ? "" : row.GetCell(23).StringCellValue,
-                    Comment = row.GetCell(24) == null ? "" : row.GetCell(24).ToString(),
-                };
-                pipe.PipeLineType = (PipeLineType)Enum.Parse(typeof(PipeLineType), pipe.WTName.Substring(0, 2));
-                pipeEachSheet.Add(pipe);
-                row = sheet.GetRow(irow++);
+                    if (row.GetCell(columnIndex) == null)
+                        row.CreateCell(columnIndex);
+                }
+                try
+                {
+                    var pipe = new PipeLineProperty
+                    {
+                        RowInd = (ushort)(row.RowNum+1),
+                        Name = row.GetCell(0).CellType == CellType.String ? row.GetCell(0).StringCellValue : "",
+                        WTName = row.GetCell(1).CellType == CellType.String ? row.GetCell(1).StringCellValue : "",
+                        Connect = row.GetCell(2).CellType == CellType.String  ? row.GetCell(2).StringCellValue : "",
+                        Attribute = row.GetCell(3).CellType == CellType.String ? row.GetCell(3).StringCellValue : "" ,
+                        Attachment = row.GetCell(4).CellType == CellType.String ? row.GetCell(4).StringCellValue : "",
+                        X = row.GetCell(5).CellType == CellType.Numeric ? row.GetCell(5).NumericCellValue : 0,
+                        Y = row.GetCell(6).CellType == CellType.Numeric ? row.GetCell(6).NumericCellValue : 0,
+                        H = row.GetCell(7).CellType == CellType.Numeric ? row.GetCell(7).NumericCellValue : 0,
+                        SPH = row.GetCell(8).CellType == CellType.Numeric ? row.GetCell(8).NumericCellValue : 0,
+                        EPH = row.GetCell(9).CellType == CellType.Numeric ? row.GetCell(9).NumericCellValue : 0,
+                        WellDepth = row.GetCell(10).CellType == CellType.Numeric ? row.GetCell(10).NumericCellValue : 0,
+                        SPDepth = row.GetCell(11).CellType == CellType.Numeric ? row.GetCell(11).NumericCellValue : 0,
+                        EPDepth = row.GetCell(12).CellType == CellType.Numeric ? row.GetCell(12).NumericCellValue : 0,
+                        Size = row.GetCell(13).CellType == CellType.Blank ? "" : row.GetCell(13).ToString(),
+                        Material = row.GetCell(14).CellType == CellType.Blank ? "" : row.GetCell(14).ToString(),
+                        Pressure = row.GetCell(15).CellType == CellType.Blank ? "" : row.GetCell(15).ToString(),
+                        Voltage = row.GetCell(16).CellType == CellType.Blank ? "" : row.GetCell(16).ToString(),
+                        TotalBHNum = row.GetCell(17).CellType == CellType.Numeric ? (ushort)row.GetCell(17).NumericCellValue : (ushort)0,
+                        UsedBHNum = row.GetCell(18).CellType == CellType.Numeric ? (ushort)row.GetCell(18).NumericCellValue : (ushort)0,
+                        CableNum = row.GetCell(19).CellType == CellType.Numeric ? (ushort)row.GetCell(19).NumericCellValue : (ushort)0,
+                        Company = row.GetCell(20).CellType == CellType.String ? row.GetCell(20).StringCellValue : "",
+                        BuryMethod = row.GetCell(21).CellType == CellType.String ? row.GetCell(21).StringCellValue : "",
+                        BuryDate = row.GetCell(22).CellType == CellType.String ? row.GetCell(22).StringCellValue : "",
+                        RoadName = row.GetCell(23).CellType == CellType.String ? row.GetCell(23).StringCellValue : "",
+                        Comment = row.GetCell(24).CellType == CellType.Blank ? "" : row.GetCell(24).ToString(),
+                    };
+                    pipe.PipeLineType = (PipeLineType)Enum.Parse(typeof(PipeLineType), pipe.WTName.Substring(0, 2));
+                    pipeEachSheet.Add(pipe);
+                    row = sheet.GetRow(irow++);
+                }
+                catch (Exception)
+                {
+                    MessageBoxButtons box = MessageBoxButtons.OK;
+                    _ = MessageBox.Show($"错误发生在工作表{sheet.SheetName}，行号{irow + 1}", "提示", box);
+                    continue;
+                }
             }
             return pipeEachSheet;
         }
@@ -580,7 +598,7 @@ namespace AutoPipelines
                         }
                         catch (Exception)
                         {
-                            ErrPipeInf.Add(new string[4] { (ErrPipeInf.Count + 1).ToString(), pipe.Name, pipe.RowInd.ToString(), string.Format("未找到{0}对应的块文件", pipe.Attachment) });
+                            ErrPipeInf.Add(new string[4] { (ErrPipeInf.Count + 1).ToString(), pipe.Name, pipe.RowInd.ToString(), $"未找到{pipe.Attachment}对应的块文件"});
                             AddRowValue(ErrPipeInf.Last());
                         }
                 }
@@ -594,7 +612,7 @@ namespace AutoPipelines
                         }
                         catch (Exception)
                         {
-                            ErrPipeInf.Add(new string[4] { (ErrPipeInf.Count + 1).ToString(), pipe.Name, pipe.RowInd.ToString(), string.Format("未找到{0}对应的块文件", pipe.Attribute) });
+                            ErrPipeInf.Add(new string[4] { (ErrPipeInf.Count + 1).ToString(), pipe.Name, pipe.RowInd.ToString(), $"未找到{pipe.Attribute}对应的块文件"});
                             AddRowValue(ErrPipeInf.Last());
                         }
                 }

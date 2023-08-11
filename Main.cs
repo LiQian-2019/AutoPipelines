@@ -88,11 +88,13 @@ namespace AutoPipelines
                         foreach (var id in result.Value.GetObjectIds())
                             entities.Add(trans.GetObject(id, OpenMode.ForRead) as Entity);
                         entities = entities.Take(entities.Count - 1).Filter1().ToList();
+                        if (entities.Count == 0) return;
                         TypedValueList[] values = new TypedValueList[entities.Count];
                         for (int i = 0; i < values.Length; i++)
                         {
-                            if (entities[i].ObjectId.GetXrecord().AsArray().Any())
-                                values[i] = new TypedValueList(entities[i].ObjectId.GetXrecord().AsArray());
+                            var xRecord = entities[i].ObjectId.GetXrecord();
+                            if (xRecord == null) return;
+                            values[i] = new TypedValueList(xRecord.AsArray());
                         }
                         DrawTableJig drawTableJig = new DrawTableJig(ptEnd, values);
                         PromptResult pr = ed.Drag(drawTableJig);
@@ -135,12 +137,14 @@ namespace AutoPipelines
                     db.Clayer = layers[br.Layer.TrimEnd('P') + "FZL"];
                     // 设置高程注记文字
                     string attachment, text1, text2;
-                    text2 = id.GetXrecord().AsArray()[9].Value.ToString();
-                    attachment = id.GetXrecord().AsArray()[6].Value.ToString();
+                    var xRecord = id.GetXrecord();
+                    if (xRecord == null) return;
+                    text2 = xRecord.AsArray()[9].Value.ToString();
+                    attachment = xRecord.AsArray()[6].Value.ToString();
                     if (attachment != "")
-                        text1 = (Convert.ToDouble(text2) - Convert.ToDouble(id.GetXrecord().AsArray()[12].Value.ToString())).ToString();
+                        text1 = (Convert.ToDouble(text2) - Convert.ToDouble(xRecord.AsArray()[12].Value.ToString())).ToString();
                     else
-                        text1 = (Convert.ToDouble(text2) - Convert.ToDouble(id.GetXrecord().AsArray()[13].Value.ToString())).ToString();
+                        text1 = (Convert.ToDouble(text2) - Convert.ToDouble(xRecord.AsArray()[13].Value.ToString())).ToString();
                     // 实现拖拽效果
                     DrawFZLJig drawFZLJig = new DrawFZLJig(br.Position, text1, text2);
                     PromptResult pr = ed.Drag(drawFZLJig);

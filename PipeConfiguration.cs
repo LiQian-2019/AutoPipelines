@@ -67,7 +67,7 @@ namespace AutoPipelines
                             errorPipe.Attachment = "";
                             errorPipe.Attribute = "一般管线点";
                             string blockName = errorPipe.PipeLineType + "P一般管线点";
-                            if (AutoPipe.CadBlockTable[blockName].IsNull)
+                            if (!AutoPipe.CadBlockTable.Has(blockName))
                                 AutoPipe.InsertCADBlock(blockName);
                         }
                         else
