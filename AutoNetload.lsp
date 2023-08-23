@@ -1,0 +1,1 @@
+(command "netload" "C:\\Users\\5991\\source\\repos\\LiQian-2019\\AutoPipelines\\bin\\Debug\\AutoPipelines.dll")

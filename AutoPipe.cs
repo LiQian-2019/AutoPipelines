@@ -55,6 +55,7 @@ namespace AutoPipelines
         public event RowAdd AddRowValue;
         public event BarGrow AddBarValue;
         public double[] Steps { get; set; } = { 0.2, 0.4, 0.6, 0.8, 0.99, 1.0 };
+
         public AutoPipe()
         {
             CadDatabase = HostApplicationServices.WorkingDatabase;
@@ -127,7 +128,7 @@ namespace AutoPipelines
                         if (sheet != null && sheet.LastRowNum > 0)
                         {
                             IRow row = sheet.GetRow(0);
-                            if (row.Cells[0].StringCellValue.Equals("图上点号")) 
+                            if (row.Cells[0].CellType.Equals(CellType.String) && row.Cells[0].StringCellValue.Equals("图上点号")) 
                                 PipeTable.AddRange(ReadSheetPipes(sheet));
                         }
                     }
@@ -522,7 +523,7 @@ namespace AutoPipelines
             {
                 HorizontalMode = (TextHorizontalMode)FzlAlignMode[5],
                 Position = fzlTpTextPos,
-                TextString = pipe.H.ToString(),
+                TextString = (pipe.H - depth).ToString(),
                 Height = 1
             };
             if (fzlTpText.HorizontalMode != TextHorizontalMode.TextLeft)
@@ -531,7 +532,7 @@ namespace AutoPipelines
             {
                 HorizontalMode = (TextHorizontalMode)FzlAlignMode[5],
                 Position = fzlBtTextPos,
-                TextString = (pipe.H - depth).ToString(),
+                TextString = pipe.H.ToString(),
                 Height = 1
             };
             if (fzlBtText.HorizontalMode != TextHorizontalMode.TextLeft)

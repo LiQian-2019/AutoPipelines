@@ -22,11 +22,11 @@ namespace AutoPipelines
         private Point3d acquirePnt, endPnt;
         private Plane plane;
 
-        public DrawFZLJig(Point3d _basePnt, string _text1, string _text2)
+        public DrawFZLJig(Point3d _basePnt, string _tpText, string _btText)
         {
             basePnt = _basePnt;
-            topText = _text1;
-            botText = _text2;
+            topText = _tpText;
+            botText = _btText;
             plane = new Plane(Point3d.Origin, Vector3d.ZAxis);
         }
 

@@ -25,6 +25,7 @@ namespace AutoPipelines
         //private Workbook workbook = null;
         //private Worksheet worksheet = null;
         private PipeConfiguration pipeConfiguration;
+        private ExportToXlsx exportToXlsx;
 
         [CommandMethod("PIPE")]
         public void Draw()
@@ -37,6 +38,20 @@ namespace AutoPipelines
             else
             {
                 pipeConfiguration.ShowDialog();
+            }
+        }
+
+        [CommandMethod("EXPTAB")]
+        public void Export()
+        {
+            if(exportToXlsx == null)
+            {
+                exportToXlsx = new ExportToXlsx();
+                exportToXlsx.ShowDialog();
+            }
+            else
+            {
+                exportToXlsx.ShowDialog();
             }
         }
 
@@ -139,12 +154,12 @@ namespace AutoPipelines
                     string attachment, text1, text2;
                     var xRecord = id.GetXrecord();
                     if (xRecord == null) return;
-                    text2 = xRecord.AsArray()[9].Value.ToString();
+                    text1 = xRecord.AsArray()[9].Value.ToString();
                     attachment = xRecord.AsArray()[6].Value.ToString();
                     if (attachment != "")
-                        text1 = (Convert.ToDouble(text2) - Convert.ToDouble(xRecord.AsArray()[12].Value.ToString())).ToString();
+                        text2 = (Convert.ToDouble(text1) - Convert.ToDouble(xRecord.AsArray()[12].Value.ToString())).ToString();
                     else
-                        text1 = (Convert.ToDouble(text2) - Convert.ToDouble(xRecord.AsArray()[13].Value.ToString())).ToString();
+                        text2 = (Convert.ToDouble(text1) - Convert.ToDouble(xRecord.AsArray()[13].Value.ToString())).ToString();
                     // 实现拖拽效果
                     DrawFZLJig drawFZLJig = new DrawFZLJig(br.Position, text1, text2);
                     PromptResult pr = ed.Drag(drawFZLJig);

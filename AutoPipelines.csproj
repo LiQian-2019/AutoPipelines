@@ -85,6 +85,14 @@
     <Compile Include="DictTools.cs" />
     <Compile Include="DrawFZLJig.cs" />
     <Compile Include="DrawTableJig.cs" />
+    <Compile Include="ExportTable.cs" />
+    <Compile Include="ExportToXlsx.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ExportToXlsx.Designer.cs">
+      <DependentUpon>ExportToXlsx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FolderSelectDialog.cs" />
     <Compile Include="ListTools.cs" />
     <Compile Include="TypedValueList.cs" />
     <Compile Include="Main.cs" />
@@ -106,6 +114,9 @@
     <None Include="PropertyTabs\宜城属性表test.xls" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="ExportToXlsx.resx">
+      <DependentUpon>ExportToXlsx.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PipeConfiguration.resx">
       <DependentUpon>PipeConfiguration.cs</DependentUpon>
     </EmbeddedResource>

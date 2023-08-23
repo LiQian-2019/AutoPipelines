@@ -70,7 +70,7 @@ namespace AutoPipelines
         {
             PipeLineProperty pipeLine = new PipeLineProperty()
             {
-                RowInd = (ushort)tv[0].Value,
+                RowInd = (ushort)(int)tv[0].Value,
                 Name = tv[1].Value.ToString(),
                 WTName = tv[2].Value.ToString(),
                 PipeLineType = (PipeLineType)tv[3].Value,
@@ -89,9 +89,9 @@ namespace AutoPipelines
                 Material = tv[16].Value.ToString(),
                 Pressure = tv[17].Value.ToString(),
                 Voltage = tv[18].Value.ToString(),
-                TotalBHNum = (ushort)tv[19].Value,
-                UsedBHNum = (ushort)tv[20].Value,
-                CableNum = (ushort)tv[21].Value,
+                TotalBHNum = (ushort)(int)tv[19].Value,
+                UsedBHNum = (ushort)(int)tv[20].Value,
+                CableNum = (ushort)(int)tv[21].Value,
                 Company = tv[22].Value.ToString(),
                 BuryMethod = tv[23].Value.ToString(),
                 BuryDate = tv[24].Value.ToString(),
