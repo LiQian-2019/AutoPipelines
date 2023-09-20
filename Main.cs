@@ -44,7 +44,7 @@ namespace AutoPipelines
         [CommandMethod("EXPTAB")]
         public void Export()
         {
-            if(exportToXlsx == null)
+            if (exportToXlsx == null)
             {
                 exportToXlsx = new ExportToXlsx();
                 exportToXlsx.ShowDialog();
@@ -113,7 +113,7 @@ namespace AutoPipelines
                         }
                         DrawTableJig drawTableJig = new DrawTableJig(ptEnd, values);
                         PromptResult pr = ed.Drag(drawTableJig);
-                        if(pr.Status == PromptStatus.OK)
+                        if (pr.Status == PromptStatus.OK)
                         {
                             BlockTable bt = (BlockTable)db.BlockTableId.GetObject(OpenMode.ForWrite);
                             BlockTableRecord btr = (BlockTableRecord)trans.GetObject(bt[BlockTableRecord.ModelSpace], OpenMode.ForWrite);
@@ -152,7 +152,7 @@ namespace AutoPipelines
                     db.Clayer = layers[br.Layer.TrimEnd('P') + "FZL"];
                     // 设置高程注记文字
                     string attachment, text1, text2;
-                    var xRecord = id.GetXrecord();
+                    var xRecord = id.GetXrecord(searchKey: id.Handle.Value.ToString());
                     if (xRecord == null) return;
                     text1 = xRecord.AsArray()[9].Value.ToString();
                     attachment = xRecord.AsArray()[6].Value.ToString();
@@ -174,7 +174,7 @@ namespace AutoPipelines
                     }
                 }
                 catch { return; }
-              trans.Commit();
+                trans.Commit();
             }
 
         }

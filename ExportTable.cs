@@ -24,7 +24,8 @@ namespace AutoPipelines
         private Database CadDatabase { get; set; }
         public Document CadDocument { get; set; }
 
-        private TypedValueList values { get; set; }
+        public SelectionSet SelectedPoints { get; set; }
+        private TypedValueList FilterInsert { get; set; }
         public List<PipeLineProperty> PipeTable { get; set; }
 
         public ExportTable()
@@ -33,59 +34,34 @@ namespace AutoPipelines
             CadDatabase = HostApplicationServices.WorkingDatabase;
             Editor = CadDocument.Editor;
 
-            values = new TypedValueList
+            FilterInsert = new TypedValueList
             {
-                new TypedValue((int)DxfCode.Operator,"<and"),
                 new TypedValue((int)DxfCode.Start,"Insert")
             };
         }
 
-        internal bool ExcuteExport()
+        /// <summary>
+        /// 执行导出到Excel的方法
+        /// </summary>
+        /// <param name="ss"></param>
+        /// <returns></returns>
+        internal bool ExcuteExport(SelectionSet ss)
         {
-            PromptSelectionResult psr;
-            if (SelectFlag.Length * PipePropStr.Length == 0)
-                return false;
-            switch (PipePropStr)
-            {
-                case "ALL":
-                    break;
-                default:
-                    string[] pipeTypes = PipePropStr.Split(',');
-                    values.Add(DxfCode.Operator, "<or");
-                    foreach (var type in pipeTypes)
-                    {
-                        values.Add(new TypedValue((int)DxfCode.LayerName, type + "P"));
-                    }
-                    values.Add(DxfCode.Operator, "or>");
-                    break;
-            }
-            values.Add(DxfCode.Operator, "and>");
-            switch (SelectFlag)
-            {
-                case "ALL":
-                    psr = Editor.SelectAll(new SelectionFilter(values));
-                    break;
-                case "USERSELECT":
-                    psr = Editor.GetSelection(new SelectionFilter(values));
-                    break;
-                default:
-                    return false;
-            }
-            if (psr.Status == PromptStatus.None)
-            {
-                CADApplication.ShowAlertDialog("未选中任何管点。");
-                return false;
-            }
-            SelectionSet ss = psr.Value;
-
             using (Transaction trans = CadDatabase.TransactionManager.StartTransaction())
             {
+                List<Entity> entities = new List<Entity>();
+                foreach (var id in ss.GetObjectIds())
+                    entities.Add(trans.GetObject(id, OpenMode.ForRead) as Entity);
+                if(PipePropStr != "ALLTYPES")
+                    entities = entities.Filter2(PipePropStr.Split(',')).Reverse().ToList();
+                if (entities.Count == 0) return false;
+
                 PipeTable = new List<PipeLineProperty>();
                 TypedValueList  typedValues;
-                foreach (var pId in ss.GetObjectIds())
+                foreach (var entity in entities)
                 {
-                    if (pId.GetXrecord() == null) continue;
-                    typedValues = pId.GetXrecord();
+                    if (entity.Id.GetXrecord() == null) continue;
+                    typedValues = entity.Id.GetXrecord();
                     PipeTable.Add(typedValues.ToPipeLineProperty());
                 }
             }
@@ -149,31 +125,33 @@ namespace AutoPipelines
                     row.CreateCell(j);
                     row.GetCell(j).CellStyle = style;
                 }
-                row.Cells[0].SetCellValue(PipeTable[i].Name);
-                row.Cells[1].SetCellValue(PipeTable[i].WTName);
-                row.Cells[2].SetCellValue(PipeTable[i].Connect);
-                row.Cells[3].SetCellValue(PipeTable[i].Attribute);
-                row.Cells[4].SetCellValue(PipeTable[i].Attachment);
-                row.Cells[5].SetCellValue(PipeTable[i].X);
-                row.Cells[6].SetCellValue(PipeTable[i].Y);
-                row.Cells[7].SetCellValue(PipeTable[i].H);
-                row.Cells[8].SetCellValue(PipeTable[i].SPH);
-                row.Cells[9].SetCellValue(PipeTable[i].EPH);
-                row.Cells[10].SetCellValue(PipeTable[i].WellDepth);
-                row.Cells[11].SetCellValue(PipeTable[i].SPDepth);
-                row.Cells[12].SetCellValue(PipeTable[i].EPDepth);
-                row.Cells[13].SetCellValue(PipeTable[i].Size);
-                row.Cells[14].SetCellValue(PipeTable[i].Material);
-                row.Cells[15].SetCellValue(PipeTable[i].Pressure);
-                row.Cells[16].SetCellValue(PipeTable[i].Voltage);
-                row.Cells[17].SetCellValue(PipeTable[i].TotalBHNum);
-                row.Cells[18].SetCellValue(PipeTable[i].UsedBHNum);
-                row.Cells[19].SetCellValue(PipeTable[i].CableNum);
-                row.Cells[20].SetCellValue(PipeTable[i].Company);
-                row.Cells[21].SetCellValue(PipeTable[i].BuryMethod);
-                row.Cells[22].SetCellValue(PipeTable[i].BuryDate);
-                row.Cells[23].SetCellValue(PipeTable[i].RoadName);
-                row.Cells[24].SetCellValue(PipeTable[i].Comment);
+                // 此处需要倒着读取PipeTable，Excel中才能正顺序写
+                int k = PipeTable.Count() - i - 1;
+                row.Cells[0].SetCellValue(PipeTable[k].Name);
+                row.Cells[1].SetCellValue(PipeTable[k].WTName);
+                row.Cells[2].SetCellValue(PipeTable[k].Connect);
+                row.Cells[3].SetCellValue(PipeTable[k].Attribute);
+                row.Cells[4].SetCellValue(PipeTable[k].Attachment);
+                row.Cells[5].SetCellValue(PipeTable[k].X);
+                row.Cells[6].SetCellValue(PipeTable[k].Y);
+                row.Cells[7].SetCellValue(PipeTable[k].H);
+                row.Cells[8].SetCellValue(PipeTable[k].SPH);
+                row.Cells[9].SetCellValue(PipeTable[k].EPH);
+                row.Cells[10].SetCellValue(PipeTable[k].WellDepth);
+                row.Cells[11].SetCellValue(PipeTable[k].SPDepth);
+                row.Cells[12].SetCellValue(PipeTable[k].EPDepth);
+                row.Cells[13].SetCellValue(PipeTable[k].Size);
+                row.Cells[14].SetCellValue(PipeTable[k].Material);
+                row.Cells[15].SetCellValue(PipeTable[k].Pressure);
+                row.Cells[16].SetCellValue(PipeTable[k].Voltage);
+                row.Cells[17].SetCellValue(PipeTable[k].TotalBHNum);
+                row.Cells[18].SetCellValue(PipeTable[k].UsedBHNum);
+                row.Cells[19].SetCellValue(PipeTable[k].CableNum);
+                row.Cells[20].SetCellValue(PipeTable[k].Company);
+                row.Cells[21].SetCellValue(PipeTable[k].BuryMethod);
+                row.Cells[22].SetCellValue(PipeTable[k].BuryDate);
+                row.Cells[23].SetCellValue(PipeTable[k].RoadName);
+                row.Cells[24].SetCellValue(PipeTable[k].Comment);
             }
 
             using (FileStream fs = new FileStream(filePathName, FileMode.Create, FileAccess.Write))
@@ -182,13 +160,26 @@ namespace AutoPipelines
             }
         }
 
-        private void CheckInputPipeProp(string inputStr)
+        public SelectionSet SelectPipes(string selectFlag)
         {
-            var pipeProps = inputStr.Split(',');
-            foreach (var p in pipeProps)
+            SelectedPoints = null;
+            PromptSelectionResult psr = null;
+            switch (selectFlag)
             {
-                Enum.IsDefined(typeof(PipeLineType), p);
+                case "ALLPOINTS":
+                    psr = Editor.SelectAll(new SelectionFilter(FilterInsert));
+                    break;
+                case "USERSELECT":
+                    psr = Editor.GetSelection(new SelectionFilter(FilterInsert));
+                    break;
+                default:
+                    break;
             }
+            if (psr.Status == PromptStatus.OK)
+                SelectedPoints = psr.Value;
+            //CADApplication.ShowAlertDialog(SelectedPoints.Count.ToString());
+            return SelectedPoints;
         }
+
     }
 }

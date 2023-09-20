@@ -13,9 +13,11 @@ namespace AutoPipelines
 {
     public partial class ExportToXlsx : Form
     {
+        public ExportTable ExpTab { get; set; }
         public ExportToXlsx()
         {
             InitializeComponent();
+            ExpTab = new ExportTable();
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -54,24 +56,29 @@ namespace AutoPipelines
                 _ = MessageBox.Show("导出路径为空！请检查路径。", "错误", 0);
                 return;
             }
-            ExportTable ExpTab = new ExportTable();
             ExpTab.FilePathName = textBox1.Text;
+
             if (radioButton1.Checked)
-                ExpTab.SelectFlag = "ALL";
-            else if (radioButton2.Checked)
-                ExpTab.SelectFlag = "USERSELECT";
+                ExpTab.SelectedPoints = ExpTab.SelectPipes("ALLPOINTS");
+
             if (radioButton3.Checked)
-                ExpTab.PipePropStr = "ALL";
+                ExpTab.PipePropStr = "ALLTYPES";
             else if (radioButton4.Checked)
             {
-                if(textBox2.Text == "")
+                if (textBox2.Text == "")
                 {
                     _ = MessageBox.Show("未输入任何管类！", "错误", 0);
                     return;
                 }
                 ExpTab.PipePropStr = textBox2.Text;
             }
-            if(ExpTab.ExcuteExport())
+
+            if(ExpTab.SelectedPoints == null)
+            {
+                MessageBox.Show("未选择任何管点！","错误",0);
+                return;
+            }
+            if (ExpTab.ExcuteExport(ExpTab.SelectedPoints))
                 MessageBox.Show("属性表导出完成。","提示",0);
         }
 
@@ -87,7 +94,7 @@ namespace AutoPipelines
 
         private void button4_Click(object sender, EventArgs e)
         {
-
+            ExpTab.SelectedPoints = ExpTab.SelectPipes("USERSELECT");
         }
     }
 }

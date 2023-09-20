@@ -101,7 +101,7 @@ namespace AutoPipelines
         /// <summary>
         /// 根据给定的excel工作簿读取属性表
         /// </summary>
-        public void  ReadPropertyTab()
+        public void ReadPropertyTab()
         {
             IWorkbook workbook = null;
             using (FileStream fs = File.Open(TabFilePathName, FileMode.Open, FileAccess.Read))
@@ -128,7 +128,7 @@ namespace AutoPipelines
                         if (sheet != null && sheet.LastRowNum > 0)
                         {
                             IRow row = sheet.GetRow(0);
-                            if (row.Cells[0].CellType.Equals(CellType.String) && row.Cells[0].StringCellValue.Equals("图上点号")) 
+                            if (row.Cells[0].CellType.Equals(CellType.String) && row.Cells[0].StringCellValue.Equals("图上点号"))
                                 PipeTable.AddRange(ReadSheetPipes(sheet));
                         }
                     }
@@ -157,11 +157,11 @@ namespace AutoPipelines
                 {
                     var pipe = new PipeLineProperty
                     {
-                        RowInd = (ushort)(row.RowNum+1),
+                        RowInd = (ushort)(row.RowNum + 1),
                         Name = row.GetCell(0).CellType == CellType.String ? row.GetCell(0).StringCellValue : "",
                         WTName = row.GetCell(1).CellType == CellType.String ? row.GetCell(1).StringCellValue : "",
-                        Connect = row.GetCell(2).CellType == CellType.String  ? row.GetCell(2).StringCellValue : "",
-                        Attribute = row.GetCell(3).CellType == CellType.String ? row.GetCell(3).StringCellValue : "" ,
+                        Connect = row.GetCell(2).CellType == CellType.String ? row.GetCell(2).StringCellValue : "",
+                        Attribute = row.GetCell(3).CellType == CellType.String ? row.GetCell(3).StringCellValue : "",
                         Attachment = row.GetCell(4).CellType == CellType.String ? row.GetCell(4).StringCellValue : "",
                         X = row.GetCell(5).CellType == CellType.Numeric ? row.GetCell(5).NumericCellValue : 0,
                         Y = row.GetCell(6).CellType == CellType.Numeric ? row.GetCell(6).NumericCellValue : 0,
@@ -186,12 +186,13 @@ namespace AutoPipelines
                     };
                     pipe.PipeLineType = (PipeLineType)Enum.Parse(typeof(PipeLineType), pipe.WTName.Substring(0, 2));
                     pipeEachSheet.Add(pipe);
-                    row = sheet.GetRow(irow++);
+                    row = sheet.GetRow(++irow);
                 }
                 catch (Exception)
                 {
                     MessageBoxButtons box = MessageBoxButtons.OK;
                     _ = MessageBox.Show($"错误发生在工作表{sheet.SheetName}，行号{irow + 1}", "提示", box);
+                    row = sheet.GetRow(++irow);
                     continue;
                 }
             }
@@ -203,8 +204,8 @@ namespace AutoPipelines
         /// </summary>
         public void DrawPipes()
         {
-            CadTransaction = CadDatabase.TransactionManager.StartTransaction();
-            CadBlockTabRecord = (BlockTableRecord)CadTransaction.GetObject(CadBlockTable[BlockTableRecord.ModelSpace], OpenMode.ForWrite);
+            //adTransaction 
+
 
             // 视角转至绘图区域
             Editor = CADApplication.DocumentManager.MdiActiveDocument.Editor;
@@ -219,8 +220,9 @@ namespace AutoPipelines
             viewTableRecord.Width = maxX - minX;
             Editor.SetCurrentView(viewTableRecord);
 
-            using (CadTransaction)
+            using (CadTransaction = CadDatabase.TransactionManager.StartTransaction())
             {
+                CadBlockTabRecord = (BlockTableRecord)CadTransaction.GetObject(CadBlockTable[BlockTableRecord.ModelSpace], OpenMode.ForWrite);
                 // 创建相应图层
                 foreach (var type in PipeTypes)
                     CreateLayer(type);
@@ -276,12 +278,13 @@ namespace AutoPipelines
                 }
 
                 CadTransaction.Commit();
-                Autodesk.AutoCAD.ApplicationServices.Core.Application.UpdateScreen();
             }
 
-            CadBlockTabRecord.Dispose();
-            CadBlockTable.Dispose();
-            CadDatabase.Dispose();
+            Autodesk.AutoCAD.ApplicationServices.Core.Application.UpdateScreen();
+            //以下三行必须删除，否则会导致第二次执行时cad崩溃
+            //CadBlockTabRecord.Dispose();
+            //CadBlockTable.Dispose();
+            //CadDatabase.Dispose();
         }
 
         /// <summary>
@@ -303,7 +306,7 @@ namespace AutoPipelines
                 case "XX": colorNumber = 3; break;
                 case "ZY": colorNumber = 3; break;
                 case "RS": colorNumber = 30; break;
-                case "QT":colorNumber = 8; break;
+                case "QT": colorNumber = 8; break;
                 default:
                     colorNumber = 7;
                     break;
@@ -388,7 +391,7 @@ namespace AutoPipelines
             CadBlockTabRecord.AppendEntity(br);
             CadTransaction.AddNewlyCreatedDBObject(br, true);
 
-            br.Id.AddXrecord(br.ObjectId.ToString(), pipe.ToTypedValueList());
+            br.Id.AddXrecord(br.Handle.Value.ToString(), pipe.ToTypedValueList());
         }
 
         /// <summary>
@@ -426,7 +429,7 @@ namespace AutoPipelines
             CadBlockTabRecord.AppendEntity(pline);
             CadTransaction.AddNewlyCreatedDBObject(pline, true);
 
-            pline.Id.AddXrecord(pline.ObjectId.ToString(), pipe.ToTypedValueList(method: "line"));
+            pline.Id.AddXrecord(pline.Handle.Value.ToString(), pipe.ToTypedValueList(method: "line"));
         }
 
         /// <summary>
@@ -564,7 +567,7 @@ namespace AutoPipelines
                 // 检查点名是否存在
                 if (string.IsNullOrWhiteSpace(pipe.WTName))
                 {
-                    ErrPipeInf.Add(new string[4] { (ErrPipeInf.Count+1).ToString(), pipe.Name, pipe.RowInd.ToString(), "缺少物探点号" });
+                    ErrPipeInf.Add(new string[4] { (ErrPipeInf.Count + 1).ToString(), pipe.Name, pipe.RowInd.ToString(), "缺少物探点号" });
                     AddRowValue(ErrPipeInf.Last());
                 }
                 // 检查坐标是否存在
@@ -599,7 +602,7 @@ namespace AutoPipelines
                         }
                         catch (Exception)
                         {
-                            ErrPipeInf.Add(new string[4] { (ErrPipeInf.Count + 1).ToString(), pipe.Name, pipe.RowInd.ToString(), $"未找到{pipe.Attachment}对应的块文件"});
+                            ErrPipeInf.Add(new string[4] { (ErrPipeInf.Count + 1).ToString(), pipe.Name, pipe.RowInd.ToString(), $"未找到{pipe.Attachment}对应的块文件" });
                             AddRowValue(ErrPipeInf.Last());
                         }
                 }
@@ -613,7 +616,7 @@ namespace AutoPipelines
                         }
                         catch (Exception)
                         {
-                            ErrPipeInf.Add(new string[4] { (ErrPipeInf.Count + 1).ToString(), pipe.Name, pipe.RowInd.ToString(), $"未找到{pipe.Attribute}对应的块文件"});
+                            ErrPipeInf.Add(new string[4] { (ErrPipeInf.Count + 1).ToString(), pipe.Name, pipe.RowInd.ToString(), $"未找到{pipe.Attribute}对应的块文件" });
                             AddRowValue(ErrPipeInf.Last());
                         }
                 }

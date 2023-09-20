@@ -73,11 +73,11 @@ namespace AutoPipelines
         public static ResultBuffer GetXrecord(this ObjectId id)
         {
             DBObject obj = id.GetObject(OpenMode.ForRead);
-            string searchKey = id.ToString();
+            string searchKey = id.Handle.Value.ToString();
             ObjectId dictId = obj.ExtensionDictionary;
             if (dictId.IsNull) return null;
             DBDictionary dict = (DBDictionary)dictId.GetObject(OpenMode.ForRead);
-            if (!dict.Contains(searchKey)) return null;
+            // if (!dict.Contains(searchKey)) return null; 由于图元必有句柄因此这句判断无效
             ObjectId xrecordId = dict.GetAt(searchKey);
             Xrecord xrecord = (Xrecord)xrecordId.GetObject(OpenMode.ForRead);
             return xrecord.Data;

@@ -60,5 +60,13 @@ namespace AutoPipelines
                               select e;
             return newEntities;
         }
+         
+        public static IEnumerable<Entity> Filter2(this IEnumerable<Entity> oldEntities, string[] pipeTypes)
+        {
+            var newEntities = from e in oldEntities
+                              where pipeTypes.Contains(e.Layer.TrimEnd('P'))
+                              select e;
+            return newEntities;
+        }
     }
 }
