@@ -33,15 +33,16 @@ namespace AutoPipelines
             {
                 Title = "打开属性表",
                 Filter = "Excel工作簿(*.xls,*.xlsx)|*.xls;*.xlsx",
-                InitialDirectory = @"C:\Users\Channing\source\repos\LiQian-2019\AutoPipelines\PropertyTabs\"
+                InitialDirectory = System.Environment.CurrentDirectory
             };
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 tabFileTxtBox.Text = ofd.FileName;
-                executeDrawBtn.Enabled = false;
                 AutoPipe.TabFilePathName = tabFileTxtBox.Text;
                 AutoPipe.ReadPropertyTab();
                 toolStripStatusLabel1.Text = "属性表读取完成。";
+                checkTabBtn.Enabled = true;
+                executeDrawBtn.Enabled = false;
             }
 
         }
@@ -61,19 +62,22 @@ namespace AutoPipelines
                 {
                     foreach (var errPipeInf in AutoPipe.ErrPipeInf)
                     {
+                        var errorPipe = AutoPipe.RawPipeTable.Find(p => p.Name == errPipeInf[1]);
                         if (errPipeInf[3].EndsWith("块文件") || errPipeInf[3].EndsWith("名称"))
                         {
-                            var errorPipe = AutoPipe.PipeTable.Find(p => p.Name == errPipeInf[1]);
                             errorPipe.Attachment = "";
                             errorPipe.Attribute = "一般管线点";
                             string blockName = errorPipe.PipeLineType + "P一般管线点";
                             if (!AutoPipe.CadBlockTable.Has(blockName))
                                 AutoPipe.InsertCADBlock(blockName);
                         }
+                        else if (errPipeInf[3] == "未找到与之相连的点号")
+                        {
+                            errorPipe.Connect = "";
+                        }
                         else
                         {
-                            var errorPipe = AutoPipe.PipeTable.Find(p => p.Name == errPipeInf[1]);
-                            AutoPipe.PipeTable.Remove(errorPipe);
+                            AutoPipe.RawPipeTable.Remove(errorPipe);
                         }
                     }
                 }
@@ -97,9 +101,10 @@ namespace AutoPipelines
                 //ClearAllRows(checkResultDataGrid);
                 checkResultDataGrid.Rows.Clear();
                 AutoPipe.CheckPropertyTab();
-                toolStripProgressBar1.Value = 0;
 
+                toolStripProgressBar1.Value = 0;
                 executeDrawBtn.Enabled = true;
+                staticBtn.Enabled = true;
             }
         }
 
@@ -169,6 +174,31 @@ namespace AutoPipelines
                 i = gridView.RowCount - 1;
                 gridView.Rows.Remove(gridView.Rows[i]);
                 i--;
+            }
+        }
+
+        private void allPipeTypesRdoBtn_CheckedChanged(object sender, EventArgs e)
+        {
+            this.selfDefinedTextBox.Enabled = false;
+        }
+
+        private void customPipeTypesRdoBtn_CheckedChanged(object sender, EventArgs e)
+        {
+            this.selfDefinedTextBox.Enabled = true;
+        }
+
+        private void staticBtn_Click(object sender, EventArgs e)
+        {
+            string text = string.Empty;
+            foreach (var pll in AutoPipe.PipeLineLength)
+            {
+                text += pll.Key + "的总长度为：" + pll.Value.ToString("0.00") + "m\n";
+            }
+            text += "所有管段总长度为：" + AutoPipe.PipeLineLength.Sum(x => x.Value).ToString("F2") + "m";
+            DialogResult d = MessageBox.Show(text, "统计（点击『确定』复制到剪贴板）", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (d == DialogResult.OK)
+            {
+                Clipboard.SetText(text);
             }
         }
     }

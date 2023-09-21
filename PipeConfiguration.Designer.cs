@@ -30,31 +30,36 @@ namespace AutoPipelines
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.drawPipeFzlChkBox = new System.Windows.Forms.CheckBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.lineStyleCmbBox = new System.Windows.Forms.ComboBox();
-            this.constWidthTxtBox = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.checkTabBtn = new System.Windows.Forms.Button();
             this.drawPipeLineChkBox = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.tabFileTxtBox = new System.Windows.Forms.TextBox();
             this.openTabBtn = new System.Windows.Forms.Button();
             this.drawPipeNameChkBox = new System.Windows.Forms.CheckBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.pipeNamePosCmbBox = new System.Windows.Forms.ComboBox();
-            this.textHeightTxtBox = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.drawPipeTypeChkBox = new System.Windows.Forms.CheckBox();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.cancelConfigBtn = new System.Windows.Forms.Button();
+            this.executeDrawBtn = new System.Windows.Forms.Button();
+            this.checkTabBtn = new System.Windows.Forms.Button();
+            this.drawPipeFzlChkBox = new System.Windows.Forms.CheckBox();
+            this.checkResultDataGrid = new System.Windows.Forms.DataGridView();
+            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.fzlPosCmbBox = new System.Windows.Forms.ComboBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.attachmentFzlChkBox = new System.Windows.Forms.CheckBox();
+            this.pointFzlChkBox = new System.Windows.Forms.CheckBox();
+            this.wellFzlChkBox = new System.Windows.Forms.CheckBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.companyChkBox = new System.Windows.Forms.CheckBox();
             this.buryMethodChkBox = new System.Windows.Forms.CheckBox();
@@ -64,28 +69,30 @@ namespace AutoPipelines
             this.voltageChkBox = new System.Windows.Forms.CheckBox();
             this.pressureChkBox = new System.Windows.Forms.CheckBox();
             this.materialChkBox = new System.Windows.Forms.CheckBox();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.fzlPosCmbBox = new System.Windows.Forms.ComboBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.attachmentFzlChkBox = new System.Windows.Forms.CheckBox();
-            this.pointFzlChkBox = new System.Windows.Forms.CheckBox();
-            this.wellFzlChkBox = new System.Windows.Forms.CheckBox();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.cancelConfigBtn = new System.Windows.Forms.Button();
-            this.executeDrawBtn = new System.Windows.Forms.Button();
-            this.checkResultDataGrid = new System.Windows.Forms.DataGridView();
-            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.lineStyleCmbBox = new System.Windows.Forms.ComboBox();
+            this.constWidthTxtBox = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.pipeNamePosCmbBox = new System.Windows.Forms.ComboBox();
+            this.textHeightTxtBox = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.selfDefinedTextBox = new System.Windows.Forms.TextBox();
+            this.customPipeTypesRdoBtn = new System.Windows.Forms.RadioButton();
+            this.allPipeTypesRdoBtn = new System.Windows.Forms.RadioButton();
+            this.staticBtn = new System.Windows.Forms.Button();
             this.statusStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
-            this.groupBox1.SuspendLayout();
-            this.groupBox3.SuspendLayout();
-            this.groupBox4.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.checkResultDataGrid)).BeginInit();
+            this.groupBox4.SuspendLayout();
+            this.groupBox3.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            this.groupBox5.SuspendLayout();
             this.SuspendLayout();
             // 
             // statusStrip1
@@ -93,7 +100,7 @@ namespace AutoPipelines
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripProgressBar1,
             this.toolStripStatusLabel1});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 579);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 659);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(624, 22);
             this.statusStrip1.TabIndex = 0;
@@ -112,113 +119,40 @@ namespace AutoPipelines
             // 
             // tableLayoutPanel1
             // 
+            this.tableLayoutPanel1.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Inset;
             this.tableLayoutPanel1.ColumnCount = 3;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 375F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 135F));
-            this.tableLayoutPanel1.Controls.Add(this.drawPipeFzlChkBox, 0, 4);
-            this.tableLayoutPanel1.Controls.Add(this.groupBox2, 1, 2);
-            this.tableLayoutPanel1.Controls.Add(this.checkTabBtn, 0, 5);
-            this.tableLayoutPanel1.Controls.Add(this.drawPipeLineChkBox, 0, 2);
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 137F));
+            this.tableLayoutPanel1.Controls.Add(this.drawPipeLineChkBox, 0, 4);
             this.tableLayoutPanel1.Controls.Add(this.label1, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.tabFileTxtBox, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.openTabBtn, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.drawPipeNameChkBox, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.groupBox1, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.groupBox3, 1, 3);
-            this.tableLayoutPanel1.Controls.Add(this.groupBox4, 1, 4);
-            this.tableLayoutPanel1.Controls.Add(this.panel1, 1, 6);
-            this.tableLayoutPanel1.Controls.Add(this.checkResultDataGrid, 1, 5);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 12);
+            this.tableLayoutPanel1.Controls.Add(this.drawPipeNameChkBox, 0, 3);
+            this.tableLayoutPanel1.Controls.Add(this.drawPipeTypeChkBox, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.panel1, 1, 7);
+            this.tableLayoutPanel1.Controls.Add(this.checkTabBtn, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.drawPipeFzlChkBox, 0, 6);
+            this.tableLayoutPanel1.Controls.Add(this.checkResultDataGrid, 1, 1);
+            this.tableLayoutPanel1.Controls.Add(this.groupBox4, 1, 6);
+            this.tableLayoutPanel1.Controls.Add(this.groupBox3, 1, 5);
+            this.tableLayoutPanel1.Controls.Add(this.groupBox2, 1, 4);
+            this.tableLayoutPanel1.Controls.Add(this.groupBox1, 1, 3);
+            this.tableLayoutPanel1.Controls.Add(this.groupBox5, 1, 2);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 7;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
+            this.tableLayoutPanel1.RowCount = 8;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 70F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 170F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(624, 564);
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 70F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(624, 659);
             this.tableLayoutPanel1.TabIndex = 1;
-            // 
-            // drawPipeFzlChkBox
-            // 
-            this.drawPipeFzlChkBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.drawPipeFzlChkBox.AutoSize = true;
-            this.drawPipeFzlChkBox.Checked = true;
-            this.drawPipeFzlChkBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.drawPipeFzlChkBox.Location = new System.Drawing.Point(9, 303);
-            this.drawPipeFzlChkBox.Name = "drawPipeFzlChkBox";
-            this.drawPipeFzlChkBox.Size = new System.Drawing.Size(96, 16);
-            this.drawPipeFzlChkBox.TabIndex = 7;
-            this.drawPipeFzlChkBox.Text = "绘制高程标注";
-            this.drawPipeFzlChkBox.UseVisualStyleBackColor = true;
-            this.drawPipeFzlChkBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.drawPipeFzlChkBox_MouseClick);
-            // 
-            // groupBox2
-            // 
-            this.tableLayoutPanel1.SetColumnSpan(this.groupBox2, 2);
-            this.groupBox2.Controls.Add(this.lineStyleCmbBox);
-            this.groupBox2.Controls.Add(this.constWidthTxtBox);
-            this.groupBox2.Controls.Add(this.label4);
-            this.groupBox2.Controls.Add(this.label5);
-            this.groupBox2.Location = new System.Drawing.Point(117, 129);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(504, 60);
-            this.groupBox2.TabIndex = 6;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "管线线段设置";
-            // 
-            // lineStyleCmbBox
-            // 
-            this.lineStyleCmbBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.lineStyleCmbBox.FormattingEnabled = true;
-            this.lineStyleCmbBox.Items.AddRange(new object[] {
-            "直线 ————",
-            "虚线 - - - - - - "});
-            this.lineStyleCmbBox.Location = new System.Drawing.Point(307, 28);
-            this.lineStyleCmbBox.Name = "lineStyleCmbBox";
-            this.lineStyleCmbBox.Size = new System.Drawing.Size(121, 20);
-            this.lineStyleCmbBox.TabIndex = 3;
-            // 
-            // constWidthTxtBox
-            // 
-            this.constWidthTxtBox.Location = new System.Drawing.Point(96, 25);
-            this.constWidthTxtBox.Name = "constWidthTxtBox";
-            this.constWidthTxtBox.Size = new System.Drawing.Size(100, 21);
-            this.constWidthTxtBox.TabIndex = 2;
-            this.constWidthTxtBox.Text = "0.1";
-            this.constWidthTxtBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(236, 31);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(65, 12);
-            this.label4.TabIndex = 1;
-            this.label4.Text = "管线特性：";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(25, 28);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(65, 12);
-            this.label5.TabIndex = 0;
-            this.label5.Text = "全局宽度：";
-            // 
-            // checkTabBtn
-            // 
-            this.checkTabBtn.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.checkTabBtn.Location = new System.Drawing.Point(19, 414);
-            this.checkTabBtn.Name = "checkTabBtn";
-            this.checkTabBtn.Size = new System.Drawing.Size(75, 23);
-            this.checkTabBtn.TabIndex = 0;
-            this.checkTabBtn.Text = "检查";
-            this.checkTabBtn.UseVisualStyleBackColor = true;
-            this.checkTabBtn.Click += new System.EventHandler(this.checkTabBtn_Click);
             // 
             // drawPipeLineChkBox
             // 
@@ -226,7 +160,7 @@ namespace AutoPipelines
             this.drawPipeLineChkBox.AutoSize = true;
             this.drawPipeLineChkBox.Checked = true;
             this.drawPipeLineChkBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.drawPipeLineChkBox.Location = new System.Drawing.Point(9, 194);
+            this.drawPipeLineChkBox.Location = new System.Drawing.Point(6, 450);
             this.drawPipeLineChkBox.Name = "drawPipeLineChkBox";
             this.tableLayoutPanel1.SetRowSpan(this.drawPipeLineChkBox, 2);
             this.drawPipeLineChkBox.Size = new System.Drawing.Size(96, 16);
@@ -239,9 +173,9 @@ namespace AutoPipelines
             // 
             this.label1.AutoSize = true;
             this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label1.Location = new System.Drawing.Point(3, 0);
+            this.label1.Location = new System.Drawing.Point(5, 2);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(108, 60);
+            this.label1.Size = new System.Drawing.Size(98, 70);
             this.label1.TabIndex = 0;
             this.label1.Text = "属性表路径：";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -249,7 +183,7 @@ namespace AutoPipelines
             // tabFileTxtBox
             // 
             this.tabFileTxtBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.tabFileTxtBox.Location = new System.Drawing.Point(117, 19);
+            this.tabFileTxtBox.Location = new System.Drawing.Point(111, 26);
             this.tabFileTxtBox.Name = "tabFileTxtBox";
             this.tabFileTxtBox.ReadOnly = true;
             this.tabFileTxtBox.Size = new System.Drawing.Size(369, 21);
@@ -259,7 +193,7 @@ namespace AutoPipelines
             // openTabBtn
             // 
             this.openTabBtn.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.openTabBtn.Location = new System.Drawing.Point(518, 18);
+            this.openTabBtn.Location = new System.Drawing.Point(515, 25);
             this.openTabBtn.Name = "openTabBtn";
             this.openTabBtn.Size = new System.Drawing.Size(77, 24);
             this.openTabBtn.TabIndex = 2;
@@ -273,7 +207,7 @@ namespace AutoPipelines
             this.drawPipeNameChkBox.AutoSize = true;
             this.drawPipeNameChkBox.Checked = true;
             this.drawPipeNameChkBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.drawPipeNameChkBox.Location = new System.Drawing.Point(9, 85);
+            this.drawPipeNameChkBox.Location = new System.Drawing.Point(6, 338);
             this.drawPipeNameChkBox.Name = "drawPipeNameChkBox";
             this.drawPipeNameChkBox.Size = new System.Drawing.Size(96, 16);
             this.drawPipeNameChkBox.TabIndex = 3;
@@ -281,60 +215,227 @@ namespace AutoPipelines
             this.drawPipeNameChkBox.UseVisualStyleBackColor = true;
             this.drawPipeNameChkBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.drawPipeNameChkBox_MouseClick);
             // 
-            // groupBox1
+            // drawPipeTypeChkBox
             // 
-            this.tableLayoutPanel1.SetColumnSpan(this.groupBox1, 2);
-            this.groupBox1.Controls.Add(this.pipeNamePosCmbBox);
-            this.groupBox1.Controls.Add(this.textHeightTxtBox);
-            this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Location = new System.Drawing.Point(117, 63);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(504, 60);
-            this.groupBox1.TabIndex = 4;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "管点名称设置";
+            this.drawPipeTypeChkBox.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.drawPipeTypeChkBox.AutoSize = true;
+            this.drawPipeTypeChkBox.Checked = true;
+            this.drawPipeTypeChkBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.drawPipeTypeChkBox.Location = new System.Drawing.Point(6, 270);
+            this.drawPipeTypeChkBox.Name = "drawPipeTypeChkBox";
+            this.drawPipeTypeChkBox.Size = new System.Drawing.Size(96, 16);
+            this.drawPipeTypeChkBox.TabIndex = 13;
+            this.drawPipeTypeChkBox.Text = "绘制管点图块";
+            this.drawPipeTypeChkBox.UseVisualStyleBackColor = true;
             // 
-            // pipeNamePosCmbBox
+            // panel1
             // 
-            this.pipeNamePosCmbBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.pipeNamePosCmbBox.FormattingEnabled = true;
-            this.pipeNamePosCmbBox.Items.AddRange(new object[] {
+            this.tableLayoutPanel1.SetColumnSpan(this.panel1, 2);
+            this.panel1.Controls.Add(this.staticBtn);
+            this.panel1.Controls.Add(this.cancelConfigBtn);
+            this.panel1.Controls.Add(this.executeDrawBtn);
+            this.panel1.Location = new System.Drawing.Point(111, 608);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(504, 45);
+            this.panel1.TabIndex = 11;
+            // 
+            // cancelConfigBtn
+            // 
+            this.cancelConfigBtn.Location = new System.Drawing.Point(408, 12);
+            this.cancelConfigBtn.Name = "cancelConfigBtn";
+            this.cancelConfigBtn.Size = new System.Drawing.Size(75, 23);
+            this.cancelConfigBtn.TabIndex = 2;
+            this.cancelConfigBtn.Text = "关闭";
+            this.cancelConfigBtn.UseVisualStyleBackColor = true;
+            this.cancelConfigBtn.Click += new System.EventHandler(this.cancelConfigBtn_Click);
+            // 
+            // executeDrawBtn
+            // 
+            this.executeDrawBtn.Enabled = false;
+            this.executeDrawBtn.Location = new System.Drawing.Point(307, 12);
+            this.executeDrawBtn.Name = "executeDrawBtn";
+            this.executeDrawBtn.Size = new System.Drawing.Size(75, 23);
+            this.executeDrawBtn.TabIndex = 1;
+            this.executeDrawBtn.Text = "绘制";
+            this.executeDrawBtn.UseVisualStyleBackColor = true;
+            this.executeDrawBtn.Click += new System.EventHandler(this.executeDrawBtn_Click);
+            // 
+            // checkTabBtn
+            // 
+            this.checkTabBtn.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.checkTabBtn.Enabled = false;
+            this.checkTabBtn.Location = new System.Drawing.Point(9, 147);
+            this.checkTabBtn.Name = "checkTabBtn";
+            this.checkTabBtn.Size = new System.Drawing.Size(90, 23);
+            this.checkTabBtn.TabIndex = 0;
+            this.checkTabBtn.Text = "检查属性表";
+            this.checkTabBtn.UseVisualStyleBackColor = true;
+            this.checkTabBtn.Click += new System.EventHandler(this.checkTabBtn_Click);
+            // 
+            // drawPipeFzlChkBox
+            // 
+            this.drawPipeFzlChkBox.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.drawPipeFzlChkBox.AutoSize = true;
+            this.drawPipeFzlChkBox.Checked = true;
+            this.drawPipeFzlChkBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.drawPipeFzlChkBox.Location = new System.Drawing.Point(6, 562);
+            this.drawPipeFzlChkBox.Name = "drawPipeFzlChkBox";
+            this.drawPipeFzlChkBox.Size = new System.Drawing.Size(96, 16);
+            this.drawPipeFzlChkBox.TabIndex = 7;
+            this.drawPipeFzlChkBox.Text = "绘制高程标注";
+            this.drawPipeFzlChkBox.UseVisualStyleBackColor = true;
+            this.drawPipeFzlChkBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.drawPipeFzlChkBox_MouseClick);
+            // 
+            // checkResultDataGrid
+            // 
+            this.checkResultDataGrid.AllowUserToAddRows = false;
+            this.checkResultDataGrid.AllowUserToDeleteRows = false;
+            this.checkResultDataGrid.AllowUserToResizeColumns = false;
+            this.checkResultDataGrid.AllowUserToResizeRows = false;
+            this.checkResultDataGrid.BackgroundColor = System.Drawing.SystemColors.ControlLight;
+            this.checkResultDataGrid.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle13.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle13.Font = new System.Drawing.Font("微软雅黑", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle13.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle13.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle13.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle13.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.checkResultDataGrid.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle13;
+            this.checkResultDataGrid.ColumnHeadersHeight = 24;
+            this.checkResultDataGrid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Column1,
+            this.Column2,
+            this.Column3,
+            this.Column4});
+            this.tableLayoutPanel1.SetColumnSpan(this.checkResultDataGrid, 2);
+            this.checkResultDataGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checkResultDataGrid.GridColor = System.Drawing.SystemColors.Control;
+            this.checkResultDataGrid.Location = new System.Drawing.Point(111, 77);
+            this.checkResultDataGrid.Name = "checkResultDataGrid";
+            this.checkResultDataGrid.ReadOnly = true;
+            dataGridViewCellStyle16.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle16.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle16.Font = new System.Drawing.Font("等线", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle16.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle16.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle16.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle16.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.checkResultDataGrid.RowHeadersDefaultCellStyle = dataGridViewCellStyle16;
+            this.checkResultDataGrid.RowHeadersVisible = false;
+            this.checkResultDataGrid.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+            this.checkResultDataGrid.RowTemplate.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.checkResultDataGrid.RowTemplate.DefaultCellStyle.BackColor = System.Drawing.Color.White;
+            this.checkResultDataGrid.RowTemplate.DefaultCellStyle.Font = new System.Drawing.Font("等线", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.checkResultDataGrid.RowTemplate.Height = 24;
+            this.checkResultDataGrid.RowTemplate.ReadOnly = true;
+            this.checkResultDataGrid.RowTemplate.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.checkResultDataGrid.Size = new System.Drawing.Size(508, 164);
+            this.checkResultDataGrid.TabIndex = 12;
+            // 
+            // Column1
+            // 
+            this.Column1.HeaderText = "序号";
+            this.Column1.Name = "Column1";
+            this.Column1.ReadOnly = true;
+            this.Column1.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.Column1.Width = 50;
+            // 
+            // Column2
+            // 
+            this.Column2.HeaderText = "点名";
+            this.Column2.Name = "Column2";
+            this.Column2.ReadOnly = true;
+            this.Column2.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            // 
+            // Column3
+            // 
+            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.Column3.DefaultCellStyle = dataGridViewCellStyle14;
+            this.Column3.HeaderText = "所在行数";
+            this.Column3.Name = "Column3";
+            this.Column3.ReadOnly = true;
+            this.Column3.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            // 
+            // Column4
+            // 
+            this.Column4.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.Column4.DefaultCellStyle = dataGridViewCellStyle15;
+            this.Column4.HeaderText = "问题描述";
+            this.Column4.Name = "Column4";
+            this.Column4.ReadOnly = true;
+            this.Column4.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            // 
+            // groupBox4
+            // 
+            this.tableLayoutPanel1.SetColumnSpan(this.groupBox4, 2);
+            this.groupBox4.Controls.Add(this.fzlPosCmbBox);
+            this.groupBox4.Controls.Add(this.label6);
+            this.groupBox4.Controls.Add(this.attachmentFzlChkBox);
+            this.groupBox4.Controls.Add(this.pointFzlChkBox);
+            this.groupBox4.Controls.Add(this.wellFzlChkBox);
+            this.groupBox4.Location = new System.Drawing.Point(111, 540);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(504, 60);
+            this.groupBox4.TabIndex = 10;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "高程标注设置";
+            // 
+            // fzlPosCmbBox
+            // 
+            this.fzlPosCmbBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.fzlPosCmbBox.FormattingEnabled = true;
+            this.fzlPosCmbBox.Items.AddRange(new object[] {
             "管点左上↖",
             "管点右上↗",
             "管点左下↙",
             "管点右下↘"});
-            this.pipeNamePosCmbBox.Location = new System.Drawing.Point(307, 26);
-            this.pipeNamePosCmbBox.Name = "pipeNamePosCmbBox";
-            this.pipeNamePosCmbBox.Size = new System.Drawing.Size(121, 20);
-            this.pipeNamePosCmbBox.TabIndex = 3;
+            this.fzlPosCmbBox.Location = new System.Drawing.Point(381, 31);
+            this.fzlPosCmbBox.Name = "fzlPosCmbBox";
+            this.fzlPosCmbBox.Size = new System.Drawing.Size(102, 20);
+            this.fzlPosCmbBox.TabIndex = 4;
             // 
-            // textHeightTxtBox
+            // label6
             // 
-            this.textHeightTxtBox.Location = new System.Drawing.Point(96, 25);
-            this.textHeightTxtBox.Name = "textHeightTxtBox";
-            this.textHeightTxtBox.Size = new System.Drawing.Size(100, 21);
-            this.textHeightTxtBox.TabIndex = 2;
-            this.textHeightTxtBox.Text = "1";
-            this.textHeightTxtBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(314, 34);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(65, 12);
+            this.label6.TabIndex = 3;
+            this.label6.Text = "标注位置：";
             // 
-            // label3
+            // attachmentFzlChkBox
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(236, 29);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(65, 12);
-            this.label3.TabIndex = 1;
-            this.label3.Text = "文字位置：";
+            this.attachmentFzlChkBox.AutoSize = true;
+            this.attachmentFzlChkBox.Location = new System.Drawing.Point(210, 33);
+            this.attachmentFzlChkBox.Name = "attachmentFzlChkBox";
+            this.attachmentFzlChkBox.Size = new System.Drawing.Size(84, 16);
+            this.attachmentFzlChkBox.TabIndex = 2;
+            this.attachmentFzlChkBox.Text = "地面标志物";
+            this.attachmentFzlChkBox.UseVisualStyleBackColor = true;
             // 
-            // label2
+            // pointFzlChkBox
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(25, 28);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(65, 12);
-            this.label2.TabIndex = 0;
-            this.label2.Text = "文字高度：";
+            this.pointFzlChkBox.AutoSize = true;
+            this.pointFzlChkBox.Location = new System.Drawing.Point(96, 33);
+            this.pointFzlChkBox.Name = "pointFzlChkBox";
+            this.pointFzlChkBox.Size = new System.Drawing.Size(84, 16);
+            this.pointFzlChkBox.TabIndex = 1;
+            this.pointFzlChkBox.Text = "一般管线点";
+            this.pointFzlChkBox.UseVisualStyleBackColor = true;
+            // 
+            // wellFzlChkBox
+            // 
+            this.wellFzlChkBox.AutoSize = true;
+            this.wellFzlChkBox.Checked = true;
+            this.wellFzlChkBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.wellFzlChkBox.Location = new System.Drawing.Point(27, 33);
+            this.wellFzlChkBox.Name = "wellFzlChkBox";
+            this.wellFzlChkBox.Size = new System.Drawing.Size(36, 16);
+            this.wellFzlChkBox.TabIndex = 0;
+            this.wellFzlChkBox.Text = "井";
+            this.wellFzlChkBox.UseVisualStyleBackColor = true;
             // 
             // groupBox3
             // 
@@ -347,7 +448,7 @@ namespace AutoPipelines
             this.groupBox3.Controls.Add(this.voltageChkBox);
             this.groupBox3.Controls.Add(this.pressureChkBox);
             this.groupBox3.Controls.Add(this.materialChkBox);
-            this.groupBox3.Location = new System.Drawing.Point(117, 195);
+            this.groupBox3.Location = new System.Drawing.Point(111, 452);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(504, 80);
             this.groupBox3.TabIndex = 9;
@@ -448,194 +549,174 @@ namespace AutoPipelines
             this.materialChkBox.Text = "材质";
             this.materialChkBox.UseVisualStyleBackColor = true;
             // 
-            // groupBox4
+            // groupBox2
             // 
-            this.tableLayoutPanel1.SetColumnSpan(this.groupBox4, 2);
-            this.groupBox4.Controls.Add(this.fzlPosCmbBox);
-            this.groupBox4.Controls.Add(this.label6);
-            this.groupBox4.Controls.Add(this.attachmentFzlChkBox);
-            this.groupBox4.Controls.Add(this.pointFzlChkBox);
-            this.groupBox4.Controls.Add(this.wellFzlChkBox);
-            this.groupBox4.Location = new System.Drawing.Point(117, 281);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(504, 60);
-            this.groupBox4.TabIndex = 10;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "高程标注设置";
+            this.tableLayoutPanel1.SetColumnSpan(this.groupBox2, 2);
+            this.groupBox2.Controls.Add(this.lineStyleCmbBox);
+            this.groupBox2.Controls.Add(this.constWidthTxtBox);
+            this.groupBox2.Controls.Add(this.label4);
+            this.groupBox2.Controls.Add(this.label5);
+            this.groupBox2.Location = new System.Drawing.Point(111, 384);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(504, 60);
+            this.groupBox2.TabIndex = 6;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "管线线段设置";
             // 
-            // fzlPosCmbBox
+            // lineStyleCmbBox
             // 
-            this.fzlPosCmbBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.fzlPosCmbBox.FormattingEnabled = true;
-            this.fzlPosCmbBox.Items.AddRange(new object[] {
+            this.lineStyleCmbBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.lineStyleCmbBox.FormattingEnabled = true;
+            this.lineStyleCmbBox.Items.AddRange(new object[] {
+            "直线 ————",
+            "虚线 - - - - - - "});
+            this.lineStyleCmbBox.Location = new System.Drawing.Point(307, 28);
+            this.lineStyleCmbBox.Name = "lineStyleCmbBox";
+            this.lineStyleCmbBox.Size = new System.Drawing.Size(121, 20);
+            this.lineStyleCmbBox.TabIndex = 3;
+            // 
+            // constWidthTxtBox
+            // 
+            this.constWidthTxtBox.Location = new System.Drawing.Point(96, 25);
+            this.constWidthTxtBox.Name = "constWidthTxtBox";
+            this.constWidthTxtBox.Size = new System.Drawing.Size(100, 21);
+            this.constWidthTxtBox.TabIndex = 2;
+            this.constWidthTxtBox.Text = "0.1";
+            this.constWidthTxtBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(236, 31);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(65, 12);
+            this.label4.TabIndex = 1;
+            this.label4.Text = "管线特性：";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(25, 28);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(65, 12);
+            this.label5.TabIndex = 0;
+            this.label5.Text = "全局宽度：";
+            // 
+            // groupBox1
+            // 
+            this.tableLayoutPanel1.SetColumnSpan(this.groupBox1, 2);
+            this.groupBox1.Controls.Add(this.pipeNamePosCmbBox);
+            this.groupBox1.Controls.Add(this.textHeightTxtBox);
+            this.groupBox1.Controls.Add(this.label3);
+            this.groupBox1.Controls.Add(this.label2);
+            this.groupBox1.Location = new System.Drawing.Point(111, 316);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(504, 60);
+            this.groupBox1.TabIndex = 4;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "管点名称设置";
+            // 
+            // pipeNamePosCmbBox
+            // 
+            this.pipeNamePosCmbBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.pipeNamePosCmbBox.FormattingEnabled = true;
+            this.pipeNamePosCmbBox.Items.AddRange(new object[] {
             "管点左上↖",
             "管点右上↗",
             "管点左下↙",
             "管点右下↘"});
-            this.fzlPosCmbBox.Location = new System.Drawing.Point(381, 31);
-            this.fzlPosCmbBox.Name = "fzlPosCmbBox";
-            this.fzlPosCmbBox.Size = new System.Drawing.Size(102, 20);
-            this.fzlPosCmbBox.TabIndex = 4;
+            this.pipeNamePosCmbBox.Location = new System.Drawing.Point(307, 26);
+            this.pipeNamePosCmbBox.Name = "pipeNamePosCmbBox";
+            this.pipeNamePosCmbBox.Size = new System.Drawing.Size(121, 20);
+            this.pipeNamePosCmbBox.TabIndex = 3;
             // 
-            // label6
+            // textHeightTxtBox
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(314, 34);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(65, 12);
-            this.label6.TabIndex = 3;
-            this.label6.Text = "标注位置：";
+            this.textHeightTxtBox.Location = new System.Drawing.Point(96, 25);
+            this.textHeightTxtBox.Name = "textHeightTxtBox";
+            this.textHeightTxtBox.Size = new System.Drawing.Size(100, 21);
+            this.textHeightTxtBox.TabIndex = 2;
+            this.textHeightTxtBox.Text = "1";
+            this.textHeightTxtBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
-            // attachmentFzlChkBox
+            // label3
             // 
-            this.attachmentFzlChkBox.AutoSize = true;
-            this.attachmentFzlChkBox.Location = new System.Drawing.Point(210, 33);
-            this.attachmentFzlChkBox.Name = "attachmentFzlChkBox";
-            this.attachmentFzlChkBox.Size = new System.Drawing.Size(84, 16);
-            this.attachmentFzlChkBox.TabIndex = 2;
-            this.attachmentFzlChkBox.Text = "地面标志物";
-            this.attachmentFzlChkBox.UseVisualStyleBackColor = true;
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(236, 29);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(65, 12);
+            this.label3.TabIndex = 1;
+            this.label3.Text = "文字位置：";
             // 
-            // pointFzlChkBox
+            // label2
             // 
-            this.pointFzlChkBox.AutoSize = true;
-            this.pointFzlChkBox.Location = new System.Drawing.Point(96, 33);
-            this.pointFzlChkBox.Name = "pointFzlChkBox";
-            this.pointFzlChkBox.Size = new System.Drawing.Size(84, 16);
-            this.pointFzlChkBox.TabIndex = 1;
-            this.pointFzlChkBox.Text = "一般管线点";
-            this.pointFzlChkBox.UseVisualStyleBackColor = true;
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(25, 28);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(65, 12);
+            this.label2.TabIndex = 0;
+            this.label2.Text = "文字高度：";
             // 
-            // wellFzlChkBox
+            // groupBox5
             // 
-            this.wellFzlChkBox.AutoSize = true;
-            this.wellFzlChkBox.Checked = true;
-            this.wellFzlChkBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.wellFzlChkBox.Location = new System.Drawing.Point(27, 33);
-            this.wellFzlChkBox.Name = "wellFzlChkBox";
-            this.wellFzlChkBox.Size = new System.Drawing.Size(36, 16);
-            this.wellFzlChkBox.TabIndex = 0;
-            this.wellFzlChkBox.Text = "井";
-            this.wellFzlChkBox.UseVisualStyleBackColor = true;
+            this.tableLayoutPanel1.SetColumnSpan(this.groupBox5, 2);
+            this.groupBox5.Controls.Add(this.selfDefinedTextBox);
+            this.groupBox5.Controls.Add(this.customPipeTypesRdoBtn);
+            this.groupBox5.Controls.Add(this.allPipeTypesRdoBtn);
+            this.groupBox5.Location = new System.Drawing.Point(111, 249);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(504, 59);
+            this.groupBox5.TabIndex = 14;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "管点类型设置";
             // 
-            // panel1
+            // selfDefinedTextBox
             // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel1.SetColumnSpan(this.panel1, 2);
-            this.panel1.Controls.Add(this.cancelConfigBtn);
-            this.panel1.Controls.Add(this.executeDrawBtn);
-            this.panel1.Location = new System.Drawing.Point(117, 511);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(504, 50);
-            this.panel1.TabIndex = 11;
+            this.selfDefinedTextBox.Location = new System.Drawing.Point(307, 19);
+            this.selfDefinedTextBox.Name = "selfDefinedTextBox";
+            this.selfDefinedTextBox.Size = new System.Drawing.Size(176, 21);
+            this.selfDefinedTextBox.TabIndex = 2;
             // 
-            // cancelConfigBtn
+            // customPipeTypesRdoBtn
             // 
-            this.cancelConfigBtn.Location = new System.Drawing.Point(408, 16);
-            this.cancelConfigBtn.Name = "cancelConfigBtn";
-            this.cancelConfigBtn.Size = new System.Drawing.Size(75, 23);
-            this.cancelConfigBtn.TabIndex = 2;
-            this.cancelConfigBtn.Text = "关闭";
-            this.cancelConfigBtn.UseVisualStyleBackColor = true;
-            this.cancelConfigBtn.Click += new System.EventHandler(this.cancelConfigBtn_Click);
+            this.customPipeTypesRdoBtn.AutoSize = true;
+            this.customPipeTypesRdoBtn.Location = new System.Drawing.Point(144, 20);
+            this.customPipeTypesRdoBtn.Name = "customPipeTypesRdoBtn";
+            this.customPipeTypesRdoBtn.Size = new System.Drawing.Size(161, 16);
+            this.customPipeTypesRdoBtn.TabIndex = 1;
+            this.customPipeTypesRdoBtn.Text = "自定义管类（以 , 分隔）";
+            this.customPipeTypesRdoBtn.UseVisualStyleBackColor = true;
+            this.customPipeTypesRdoBtn.CheckedChanged += new System.EventHandler(this.customPipeTypesRdoBtn_CheckedChanged);
             // 
-            // executeDrawBtn
+            // allPipeTypesRdoBtn
             // 
-            this.executeDrawBtn.Enabled = false;
-            this.executeDrawBtn.Location = new System.Drawing.Point(307, 16);
-            this.executeDrawBtn.Name = "executeDrawBtn";
-            this.executeDrawBtn.Size = new System.Drawing.Size(75, 23);
-            this.executeDrawBtn.TabIndex = 1;
-            this.executeDrawBtn.Text = "绘制";
-            this.executeDrawBtn.UseVisualStyleBackColor = true;
-            this.executeDrawBtn.Click += new System.EventHandler(this.executeDrawBtn_Click);
+            this.allPipeTypesRdoBtn.AutoSize = true;
+            this.allPipeTypesRdoBtn.Checked = true;
+            this.allPipeTypesRdoBtn.Location = new System.Drawing.Point(27, 20);
+            this.allPipeTypesRdoBtn.Name = "allPipeTypesRdoBtn";
+            this.allPipeTypesRdoBtn.Size = new System.Drawing.Size(71, 16);
+            this.allPipeTypesRdoBtn.TabIndex = 0;
+            this.allPipeTypesRdoBtn.TabStop = true;
+            this.allPipeTypesRdoBtn.Text = "全部管类";
+            this.allPipeTypesRdoBtn.UseVisualStyleBackColor = true;
+            this.allPipeTypesRdoBtn.CheckedChanged += new System.EventHandler(this.allPipeTypesRdoBtn_CheckedChanged);
             // 
-            // checkResultDataGrid
+            // staticBtn
             // 
-            this.checkResultDataGrid.AllowUserToAddRows = false;
-            this.checkResultDataGrid.AllowUserToDeleteRows = false;
-            this.checkResultDataGrid.AllowUserToResizeColumns = false;
-            this.checkResultDataGrid.AllowUserToResizeRows = false;
-            this.checkResultDataGrid.BackgroundColor = System.Drawing.SystemColors.ControlLight;
-            this.checkResultDataGrid.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("微软雅黑", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.checkResultDataGrid.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
-            this.checkResultDataGrid.ColumnHeadersHeight = 24;
-            this.checkResultDataGrid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Column1,
-            this.Column2,
-            this.Column3,
-            this.Column4});
-            this.tableLayoutPanel1.SetColumnSpan(this.checkResultDataGrid, 2);
-            this.checkResultDataGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.checkResultDataGrid.GridColor = System.Drawing.SystemColors.Control;
-            this.checkResultDataGrid.Location = new System.Drawing.Point(117, 347);
-            this.checkResultDataGrid.Name = "checkResultDataGrid";
-            this.checkResultDataGrid.ReadOnly = true;
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("等线", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.checkResultDataGrid.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
-            this.checkResultDataGrid.RowHeadersVisible = false;
-            this.checkResultDataGrid.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            this.checkResultDataGrid.RowTemplate.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.checkResultDataGrid.RowTemplate.DefaultCellStyle.BackColor = System.Drawing.Color.White;
-            this.checkResultDataGrid.RowTemplate.DefaultCellStyle.Font = new System.Drawing.Font("等线", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.checkResultDataGrid.RowTemplate.Height = 24;
-            this.checkResultDataGrid.RowTemplate.ReadOnly = true;
-            this.checkResultDataGrid.RowTemplate.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.checkResultDataGrid.Size = new System.Drawing.Size(504, 158);
-            this.checkResultDataGrid.TabIndex = 12;
-            // 
-            // Column1
-            // 
-            this.Column1.HeaderText = "序号";
-            this.Column1.Name = "Column1";
-            this.Column1.ReadOnly = true;
-            this.Column1.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.Column1.Width = 50;
-            // 
-            // Column2
-            // 
-            this.Column2.HeaderText = "点名";
-            this.Column2.Name = "Column2";
-            this.Column2.ReadOnly = true;
-            this.Column2.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            // 
-            // Column3
-            // 
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.Column3.DefaultCellStyle = dataGridViewCellStyle2;
-            this.Column3.HeaderText = "所在行数";
-            this.Column3.Name = "Column3";
-            this.Column3.ReadOnly = true;
-            this.Column3.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            // 
-            // Column4
-            // 
-            this.Column4.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.Column4.DefaultCellStyle = dataGridViewCellStyle3;
-            this.Column4.HeaderText = "问题描述";
-            this.Column4.Name = "Column4";
-            this.Column4.ReadOnly = true;
-            this.Column4.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.staticBtn.Enabled = false;
+            this.staticBtn.Location = new System.Drawing.Point(206, 12);
+            this.staticBtn.Name = "staticBtn";
+            this.staticBtn.Size = new System.Drawing.Size(75, 23);
+            this.staticBtn.TabIndex = 3;
+            this.staticBtn.Text = "统计";
+            this.staticBtn.UseVisualStyleBackColor = true;
+            this.staticBtn.Click += new System.EventHandler(this.staticBtn_Click);
             // 
             // PipeConfiguration
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(624, 601);
+            this.ClientSize = new System.Drawing.Size(624, 681);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.statusStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -649,16 +730,18 @@ namespace AutoPipelines
             this.statusStrip1.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
+            this.panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.checkResultDataGrid)).EndInit();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
-            this.groupBox4.ResumeLayout(false);
-            this.groupBox4.PerformLayout();
-            this.panel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.checkResultDataGrid)).EndInit();
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -682,9 +765,6 @@ namespace AutoPipelines
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Button cancelConfigBtn;
-        private System.Windows.Forms.Button executeDrawBtn;
         private System.Windows.Forms.Button checkTabBtn;
         internal System.Windows.Forms.CheckBox drawPipeNameChkBox;
         internal System.Windows.Forms.CheckBox drawPipeFzlChkBox;
@@ -705,10 +785,19 @@ namespace AutoPipelines
         internal System.Windows.Forms.CheckBox attachmentFzlChkBox;
         internal System.Windows.Forms.CheckBox pointFzlChkBox;
         internal System.Windows.Forms.CheckBox wellFzlChkBox;
+        private System.Windows.Forms.GroupBox groupBox5;
+        internal System.Windows.Forms.CheckBox drawPipeTypeChkBox;
+        internal System.Windows.Forms.TextBox selfDefinedTextBox;
+        internal System.Windows.Forms.RadioButton allPipeTypesRdoBtn;
+        internal System.Windows.Forms.RadioButton customPipeTypesRdoBtn;
         private System.Windows.Forms.DataGridView checkResultDataGrid;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Button cancelConfigBtn;
+        private System.Windows.Forms.Button executeDrawBtn;
+        private System.Windows.Forms.Button staticBtn;
     }
 }
