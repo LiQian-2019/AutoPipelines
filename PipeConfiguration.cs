@@ -33,7 +33,7 @@ namespace AutoPipelines
             {
                 Title = "打开属性表",
                 Filter = "Excel工作簿(*.xls,*.xlsx)|*.xls;*.xlsx",
-                InitialDirectory = System.Environment.CurrentDirectory
+                InitialDirectory = Environment.CurrentDirectory
             };
             if (ofd.ShowDialog() == DialogResult.OK)
             {
@@ -63,6 +63,7 @@ namespace AutoPipelines
                     foreach (var errPipeInf in AutoPipe.ErrPipeInf)
                     {
                         var errorPipe = AutoPipe.RawPipeTable.Find(p => p.Name == errPipeInf[1]);
+                        if (errorPipe == null) continue;
                         if (errPipeInf[3].EndsWith("块文件") || errPipeInf[3].EndsWith("名称"))
                         {
                             errorPipe.Attachment = "";
@@ -70,6 +71,10 @@ namespace AutoPipelines
                             string blockName = errorPipe.PipeLineType + "P一般管线点";
                             if (!AutoPipe.CadBlockTable.Has(blockName))
                                 AutoPipe.InsertCADBlock(blockName);
+                        }
+                        else if (errPipeInf[3] == "物探点号重复")
+                        {
+                            // 两个都留下
                         }
                         else if (errPipeInf[3] == "未找到与之相连的点号")
                         {
@@ -190,15 +195,18 @@ namespace AutoPipelines
         private void staticBtn_Click(object sender, EventArgs e)
         {
             string text = string.Empty;
-            foreach (var pll in AutoPipe.PipeLineLength)
+            if (AutoPipe.PipeLineLength != null)
             {
-                text += pll.Key + "的总长度为：" + pll.Value.ToString("0.00") + "m\n";
-            }
-            text += "所有管段总长度为：" + AutoPipe.PipeLineLength.Sum(x => x.Value).ToString("F2") + "m";
-            DialogResult d = MessageBox.Show(text, "统计（点击『确定』复制到剪贴板）", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            if (d == DialogResult.OK)
-            {
-                Clipboard.SetText(text);
+                foreach (var pll in AutoPipe.PipeLineLength)
+                {
+                    text += pll.Key + "的总长度为：" + pll.Value.ToString("0.00") + "m\n";
+                }
+                text += "所有管段总长度为：" + AutoPipe.PipeLineLength.Sum(x => x.Value).ToString("F2") + "m";
+                DialogResult d = MessageBox.Show(text, "统计（点击『确定』复制到剪贴板）", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                if (d == DialogResult.OK)
+                {
+                    Clipboard.SetText(text);
+                }
             }
         }
     }

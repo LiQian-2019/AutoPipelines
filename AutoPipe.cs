@@ -276,10 +276,13 @@ namespace AutoPipelines
                         if (pipe.Connect.Any())
                         {
                             var endPipe = PipeTable.FirstOrDefault(p => p.WTName == pipe.Connect);
-                            CadDatabase.Clayer = Layers[pipe.PipeLineType + "L"];
-                            DrawPipeLine(pipe, endPipe);
-                            CadDatabase.Clayer = Layers[pipe.PipeLineType + "T"];
-                            DrawPipeText(pipe, endPipe);
+                            if (endPipe != null)
+                            {
+                                CadDatabase.Clayer = Layers[pipe.PipeLineType + "L"];
+                                DrawPipeLine(pipe, endPipe);
+                                CadDatabase.Clayer = Layers[pipe.PipeLineType + "T"];
+                                DrawPipeText(pipe, endPipe);
+                            }
                         }
                     }
 
@@ -530,10 +533,13 @@ namespace AutoPipelines
                 TextString = text
             };
 
-            CadBlockTabRecord.AppendEntity(pipeText);
             PipeLineLength[pipe.PipeLineType.ToString()] += lineLength;
             if (text.Length < lineLength)
+            {
+                // 以下两句必须一起执行，否则会导致文件保存失败
+                CadBlockTabRecord.AppendEntity(pipeText);
                 CadTransaction.AddNewlyCreatedDBObject(pipeText, true);
+            }
         }
 
         /// <summary>
@@ -598,6 +604,12 @@ namespace AutoPipelines
                 if (string.IsNullOrWhiteSpace(pipe.WTName))
                 {
                     ErrPipeInf.Add(new string[4] { (ErrPipeInf.Count + 1).ToString(), pipe.Name, pipe.RowInd.ToString(), "缺少物探点号" });
+                    AddRowValue(ErrPipeInf.Last());
+                }
+                // 检查点名是否重复
+                if (RawPipeTable.FindAll(p=>p.WTName==pipe.WTName).Count>1)
+                {
+                    ErrPipeInf.Add(new string[4] { (ErrPipeInf.Count + 1).ToString(), pipe.Name, pipe.RowInd.ToString(), "物探点号重复" });
                     AddRowValue(ErrPipeInf.Last());
                 }
                 // 检查坐标是否存在
@@ -667,7 +679,8 @@ namespace AutoPipelines
         /// <param name="blockName"></param>
         internal void InsertCADBlock(string blockName)
         {
-            string blockFilePathName = Path.Combine(Environment.CurrentDirectory, "CADBlocks", blockName + ".dwg");
+            string blockFilePathName = Path.Combine(Application.StartupPath,"AutoPipelines",
+                                                    "bin","Release","CADBlocks", blockName + ".dwg");
             var sourceDb = new Database(false, false);
             sourceDb.ReadDwgFile(blockFilePathName, FileShare.Read, true, "");
             CadDatabase.Insert(blockName, sourceDb, true);
