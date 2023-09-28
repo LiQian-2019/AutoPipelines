@@ -17,32 +17,32 @@ namespace AutoPipelines
                 case "all":
                     typedValues = new TypedValueList
                 {
-                    {DxfCode.Int32, plp.RowInd},
+                    {DxfCode.Int32, plp.RowInd}, // 0
                     {DxfCode.Text, plp.Name},
                     {DxfCode.Text, plp.WTName},
                     {DxfCode.Int32, (int)plp.PipeLineType},
                     {DxfCode.Text, plp.Connect},
-                    {DxfCode.Text, plp.Attribute},
+                    {DxfCode.Text, plp.Attribute}, // 5
                     {DxfCode.Text, plp.Attachment},
                     {DxfCode.Real, plp.X},
                     {DxfCode.Real, plp.Y},
                     {DxfCode.Real, plp.H},
-                    {DxfCode.Real, plp.SPH},
+                    {DxfCode.Real, plp.SPH}, // 10
                     {DxfCode.Real, plp.EPH},
                     {DxfCode.Real, plp.WellDepth},
                     {DxfCode.Real, plp.SPDepth},
                     {DxfCode.Real, plp.EPDepth},
-                    {DxfCode.Text, plp.Size},
+                    {DxfCode.Text, plp.Size}, // 15
                     {DxfCode.Text, plp.Material},
                     {DxfCode.Text, plp.Pressure},
                     {DxfCode.Text, plp.Voltage},
                     {DxfCode.Int32, plp.TotalBHNum},
-                    {DxfCode.Int32, plp.UsedBHNum},
+                    {DxfCode.Int32, plp.UsedBHNum}, // 20
                     {DxfCode.Int32, plp.CableNum},
                     {DxfCode.Text, plp.Company},
                     {DxfCode.Text, plp.BuryMethod},
                     {DxfCode.Text, plp.BuryDate},
-                    {DxfCode.Text, plp.RoadName},
+                    {DxfCode.Text, plp.RoadName}, // 25
                     {DxfCode.Text, plp.Comment},
                     {DxfCode.Text, plp.Tag},
                 };

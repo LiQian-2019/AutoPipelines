@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AutoPipelines
 {
-    public static class  ListTools
+    public static class  FilterTools
     {
         public static IList<T> Init<T>(this IList<T> list, int number)
         {

@@ -70,6 +70,7 @@ namespace AutoPipelines
             return xrecord.Data;
         }
 
+        // 重载获取扩展记录（在没有提供searchKey的情况下默认以Handle值作为key来查找）
         public static ResultBuffer GetXrecord(this ObjectId id)
         {
             DBObject obj = id.GetObject(OpenMode.ForRead);
@@ -121,7 +122,7 @@ namespace AutoPipelines
         /// 删除对象扩展字典中所有的扩展记录
         /// </summary>
         /// <param name="id"></param>
-        public static  void DelAllXrecord(this ObjectId id)
+        public static void DelAllXrecord(this ObjectId id)
         {
             DBObject obj = id.GetObject(OpenMode.ForRead);
             ObjectId dictId = obj.ExtensionDictionary;
@@ -147,6 +148,99 @@ namespace AutoPipelines
             obj.UpgradeOpen();
             id.DelAllXrecord();
             obj.ReleaseExtensionDictionary();
+            obj.DowngradeOpen();
+        }
+
+        /// <summary>
+        /// 添加对象的扩展数据
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="regAppName"></param>
+        /// <param name="values"></param>
+        public static void AddXData(this ObjectId id, string regAppName, TypedValueList values)
+        {
+            Database db = id.Database;
+            RegAppTable regTable = db.RegAppTableId.GetObject(OpenMode.ForWrite) as RegAppTable;
+            // 先检查注册应用程序表里面是否有注册有该应用程序，若没有，则添加：
+            if (!regTable.Has(regAppName))
+            {
+                RegAppTableRecord regRecord = new RegAppTableRecord
+                {
+                    Name = regAppName
+                };
+                regTable.Add(regRecord);
+                db.TransactionManager.AddNewlyCreatedDBObject(regRecord, true);
+            }
+
+            DBObject obj = id.GetObject(OpenMode.ForWrite);
+            // 任何扩展数据在写入之前都必须添加它的注册应用程序名（必须在第一条添加，否则会报错）：
+            values.Insert(0, new TypedValue((int)DxfCode.ExtendedDataRegAppName, regAppName));
+            // 添加完之后把TypedValue附加到实体的扩展数据上
+            obj.XData = values;
+            regTable.DowngradeOpen();
+        }
+
+        /// <summary>
+        /// 获取对象的扩展数据
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="regAppName"></param>
+        /// <returns></returns>
+        public static ResultBuffer GetXData(this ObjectId id, string regAppName)
+        {
+            DBObject obj = id.GetObject(OpenMode.ForRead);
+            ResultBuffer values = obj.GetXDataForApplication(regAppName);
+            return values;
+        }
+
+        /// <summary>
+        /// 删除对象的扩展数据
+        /// 设置对象的XData属性为null是不能删除扩展数据的，只能对XData属性重新赋值为只包含
+        /// 应用程序名的扩展数据项，才可以达到删除扩展数据的目的
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="regAppName"></param>
+        public static void RemoveXData(this ObjectId id, string regAppName)
+        {
+            DBObject obj = id.GetObject(OpenMode.ForWrite);
+            // 获取注册应用程序regAppName名下的扩展数据列表
+            TypedValueList xdata = obj.GetXDataForApplication(regAppName);
+            if (!(xdata is null)) // 如果有扩展数据
+            {
+                // 新建一个TypedValue列表，并只添加注册应用程序名扩展数据项
+                TypedValueList newValues = new TypedValueList
+                {
+                    { DxfCode.ExtendedDataRegAppName, regAppName }
+                };
+                // 为对象的XData属性重新赋值，从而删除扩展数据
+                obj.XData = newValues;
+            }
+            obj.DowngradeOpen();
+        }
+
+        /// <summary>
+        /// 修改对象的扩展数据
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="regAppName"></param>
+        /// <param name="code"></param>
+        /// <param name="oldValue"></param>
+        /// <param name="newValue"></param>
+        public static void ModXData(this ObjectId id, string regAppName, DxfCode code,
+                                    object oldValue, object newValue)
+        {
+            DBObject obj = id.GetObject(OpenMode.ForWrite);
+            TypedValueList xdata = obj.GetXDataForApplication(regAppName);
+            for (int i = 0; i < xdata.Count; i++)
+            {
+                TypedValue tv = xdata[i];
+                if (tv.TypeCode == (short)code && tv.Value.Equals(oldValue))
+                {
+                    xdata[i] = new TypedValue(tv.TypeCode, newValue);
+                    break;
+                }
+            }
+            obj.XData = xdata;
             obj.DowngradeOpen();
         }
     }

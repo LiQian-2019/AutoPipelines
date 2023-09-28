@@ -14,8 +14,10 @@ using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Colors;
 using Polyline = Autodesk.AutoCAD.DatabaseServices.Polyline;
+using Autodesk.AutoCAD.Windows;
 //using EXLApplication = NetOffice.ExcelApi.Application;
 //using NetOffice.ExcelApi;
+
 
 namespace AutoPipelines
 {
@@ -26,6 +28,10 @@ namespace AutoPipelines
         //private Worksheet worksheet = null;
         private PipeConfiguration pipeConfiguration;
         private ExportToXlsx exportToXlsx;
+        internal static PaletteSet PltSet = null;
+        static UCRecordPM recordPM = null;
+
+        readonly Document doc = CADApplication.DocumentManager.MdiActiveDocument;
 
         [CommandMethod("PIPE")]
         public void Draw()
@@ -58,9 +64,9 @@ namespace AutoPipelines
         [CommandMethod("SLICETABLE")]
         public void SliceTable()
         {
-            Document doc = CADApplication.DocumentManager.MdiActiveDocument;
             Database db = doc.Database;
             Editor ed = doc.Editor;
+
             using (Transaction trans = db.TransactionManager.StartTransaction())
             {
                 LayerTable lt = (LayerTable)trans.GetObject(db.LayerTableId, OpenMode.ForWrite);
@@ -131,7 +137,6 @@ namespace AutoPipelines
         [CommandMethod("FLAG")]
         public void DrawFlag()
         {
-            Document doc = CADApplication.DocumentManager.MdiActiveDocument;
             Database db = doc.Database;
             Editor ed = doc.Editor;
 
@@ -179,6 +184,94 @@ namespace AutoPipelines
 
         }
 
+        [CommandMethod("ShowRPM")]
+        public void ShowRPM()
+        {
+            if (PltSet is null)
+            {
+                PltSet = new PaletteSet("管点属性");
+                recordPM = new UCRecordPM();
+                PltSet.Add("属性列表", recordPM);
+                PltSet.Dock = DockSides.Left;
+                PltSet.Style = PaletteSetStyles.ShowAutoHideButton;
+                CADApplication.DocumentManager.DocumentDestroyed += DocumentManager_DocumentDestroyed;
+            }
+            if (!PltSet.Visible)
+            {
+                PltSet.Visible = true;
+                doc.ImpliedSelectionChanged += new EventHandler(ImpliedSelectionChanged);
+            }
+
+        }
+
+        private void DocumentManager_DocumentDestroyed(object sender, DocumentDestroyedEventArgs e)
+        {
+            if (!(PltSet is null))
+            {
+                PltSet.Visible = false;
+                PltSet = null;
+            }
+        }
+
+        [CommandMethod("CloseRPM")]
+        public void CloseRPM()
+        {
+            if ((!(PltSet is null)) && PltSet.Visible)
+            {
+                doc.ImpliedSelectionChanged -= new EventHandler(ImpliedSelectionChanged);
+                PltSet.Visible = false;
+            }
+        }
+
+        public void ImpliedSelectionChanged(object sender, EventArgs e)
+        {
+            Database db = doc.Database;
+            Editor ed = doc.Editor;
+
+            PromptSelectionResult psr = ed.SelectImplied();
+            if (psr.Status != PromptStatus.OK) return;
+
+            // 获取选择的最后一个图元
+            ObjectId selectedId = psr.Value.GetObjectIds().LastOrDefault();
+            ResultBuffer xrecord, xdata;
+            using (Transaction trans = db.TransactionManager.StartTransaction())
+            {
+                Entity selectedEntity = trans.GetObject(selectedId, OpenMode.ForRead) as Entity;
+                // 如果选择的是块，直接更新到面板
+                if (selectedEntity is BlockReference)
+                {
+                    string handle = selectedId.Handle.Value.ToString();
+                    xrecord = selectedId.GetXrecord(searchKey: handle);
+                    if (!(xrecord is null))
+                        recordPM.UpdatePM(handle, xrecord.AsArray());
+                    return;
+                }
+                // 如果选择的不是块，查找符合该图元管类图层的块
+                xdata = selectedId.GetXData("AutoPipelines");
+                if (xdata is null) return;
+                string pipeType = xdata.AsArray()[1].Value.ToString().Substring(0, 2);
+                TypedValue[] values = new TypedValue[]
+                {
+                    new TypedValue(0,RXClass.GetClass(typeof(BlockReference)).DxfName),
+                    new TypedValue((int)DxfCode.LayerName,$"*{pipeType}*"),
+                    //new TypedValue((int)DxfCode.XDataStart),
+                    //new TypedValue((int)DxfCode.ExtendedDataRegAppName,"AutoPipelines"),
+                    //new TypedValue((int)DxfCode.ExtendedDataAsciiString,pipeWTName)
+                };
+
+                PromptSelectionResult psr2 = ed.SelectAll(new SelectionFilter(values));
+                if (psr2.Value.Count > 0)
+                {
+                    ObjectId[] ids = psr2.Value.GetObjectIds();
+                    ObjectId id1 = ids.FirstOrDefault(id => id.GetXData("AutoPipelines") == xdata);
+                    string handle = id1.Handle.Value.ToString();
+                    xrecord = id1.GetXrecord(searchKey: handle);
+                    if (!(xrecord is null))
+                        recordPM.UpdatePM(handle, xrecord.AsArray());
+                }
+            }
+
+        }
 
         //private void ReadPropertyTab(string fileName)
         //{

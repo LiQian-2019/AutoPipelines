@@ -56,7 +56,8 @@ namespace AutoPipelines
 
         public event RowAdd AddRowValue;
         public event BarGrow AddBarValue;
-        public double[] Steps { get; set; } = { 0.2, 0.4, 0.6, 0.8, 0.99, 1.0 };
+        private double[] Steps { get; set; } = { 0.2, 0.4, 0.6, 0.8, 0.99, 1.0 };
+        private string RegAppName { get; } = "AutoPipelines";
 
         public AutoPipe()
         {
@@ -415,15 +416,15 @@ namespace AutoPipelines
             string blockName;
             if (pipe.Attachment.Any())
                 blockName = pipe.PipeLineType + "P" + pipe.Attachment;
-            else if (pipe.Attribute.Any())
-                blockName = pipe.PipeLineType + "P" + pipe.Attribute;
             else
-                blockName = pipe.PipeLineType + "P一般管线点";
+                blockName = pipe.PipeLineType + "P" + pipe.Attribute;
+            if (!CadBlockTable.Has(blockName)) return;
             BlockReference br = new BlockReference(new Point3d(pipe.X, pipe.Y, pipe.H), CadBlockTable[blockName]);
             CadBlockTabRecord.AppendEntity(br);
             CadTransaction.AddNewlyCreatedDBObject(br, true);
 
             br.Id.AddXrecord(br.Handle.Value.ToString(), pipe.ToTypedValueList());
+            br.Id.AddXData(RegAppName, new TypedValueList(new TypedValue((int)DxfCode.ExtendedDataAsciiString, pipe.WTName)));
         }
 
         /// <summary>
@@ -443,6 +444,8 @@ namespace AutoPipelines
             };
             CadBlockTabRecord.AppendEntity(pipeName);
             CadTransaction.AddNewlyCreatedDBObject(pipeName, true);
+
+            pipeName.Id.AddXData(RegAppName, new TypedValueList(new TypedValue((int)DxfCode.ExtendedDataAsciiString, pipe.WTName)));
         }
 
         /// <summary>
@@ -462,6 +465,7 @@ namespace AutoPipelines
             CadTransaction.AddNewlyCreatedDBObject(pline, true);
 
             pline.Id.AddXrecord(pline.Handle.Value.ToString(), pipe.ToTypedValueList(method: "line"));
+            pline.Id.AddXData(RegAppName, new TypedValueList(new TypedValue((int)DxfCode.ExtendedDataAsciiString, pipe.WTName)));
         }
 
         /// <summary>
@@ -539,6 +543,7 @@ namespace AutoPipelines
                 // 以下两句必须一起执行，否则会导致文件保存失败
                 CadBlockTabRecord.AppendEntity(pipeText);
                 CadTransaction.AddNewlyCreatedDBObject(pipeText, true);
+                pipeText.Id.AddXData(RegAppName, new TypedValueList(new TypedValue((int)DxfCode.ExtendedDataAsciiString, pipe.WTName)));
             }
         }
 
@@ -584,6 +589,9 @@ namespace AutoPipelines
             CadTransaction.AddNewlyCreatedDBObject(pline, true);
             CadTransaction.AddNewlyCreatedDBObject(fzlTpText, true);
             CadTransaction.AddNewlyCreatedDBObject(fzlBtText, true);
+            pline.Id.AddXData(RegAppName, new TypedValueList(new TypedValue((int)DxfCode.ExtendedDataAsciiString, pipe.WTName)));
+            fzlTpText.Id.AddXData(RegAppName, new TypedValueList(new TypedValue((int)DxfCode.ExtendedDataAsciiString, pipe.WTName)));
+            fzlBtText.Id.AddXData(RegAppName, new TypedValueList(new TypedValue((int)DxfCode.ExtendedDataAsciiString, pipe.WTName)));
         }
 
         /// <summary>
@@ -600,14 +608,20 @@ namespace AutoPipelines
             int i = 0;
             foreach (var pipe in RawPipeTable)
             {
-                // 检查点名是否存在
+                // 检查图上点号是否存在
                 if (string.IsNullOrWhiteSpace(pipe.WTName))
                 {
                     ErrPipeInf.Add(new string[4] { (ErrPipeInf.Count + 1).ToString(), pipe.Name, pipe.RowInd.ToString(), "缺少物探点号" });
                     AddRowValue(ErrPipeInf.Last());
                 }
-                // 检查点名是否重复
-                if (RawPipeTable.FindAll(p=>p.WTName==pipe.WTName).Count>1)
+                // 检查物探点号是否与图上点号不一致
+                if (!pipe.WTName.Equals(pipe.Name))
+                {
+                    ErrPipeInf.Add(new string[4] { (ErrPipeInf.Count + 1).ToString(), pipe.Name, pipe.RowInd.ToString(), "物探点号与图上点号不符" });
+                    AddRowValue(ErrPipeInf.Last());
+                }
+                // 检查物探点号是否重复
+                if (RawPipeTable.FindAll(p => p.WTName == pipe.WTName).Count > 1)
                 {
                     ErrPipeInf.Add(new string[4] { (ErrPipeInf.Count + 1).ToString(), pipe.Name, pipe.RowInd.ToString(), "物探点号重复" });
                     AddRowValue(ErrPipeInf.Last());
@@ -637,29 +651,41 @@ namespace AutoPipelines
                 {
                     blockName = pipe.PipeLineType + "P" + pipe.Attachment;
                     if (!CadBlockTable.Has(blockName))
-                        try
-                        {
-                            InsertCADBlock(blockName);
-                        }
-                        catch (Exception)
+                        if (!InsertCADBlock(blockName))
                         {
                             ErrPipeInf.Add(new string[4] { (ErrPipeInf.Count + 1).ToString(), pipe.Name, pipe.RowInd.ToString(), $"未找到{pipe.Attachment}对应的块文件" });
                             AddRowValue(ErrPipeInf.Last());
                         }
+                    //try
+                    //{
+                    //    InsertCADBlock(blockName);
+                    //}
+                    //catch (Exception)
+                    //{
+                    //    ErrPipeInf.Add(new string[4] { (ErrPipeInf.Count + 1).ToString(), pipe.Name, pipe.RowInd.ToString(), $"未找到{pipe.Attachment}对应的块文件" });
+                    //    AddRowValue(ErrPipeInf.Last());
+                    //}
                 }
                 else if (pipe.Attribute.Any())
                 {
                     blockName = pipe.PipeLineType + "P" + pipe.Attribute;
                     if (!CadBlockTable.Has(blockName))
-                        try
-                        {
-                            InsertCADBlock(blockName);
-                        }
-                        catch (Exception)
+                    {
+                        if (!InsertCADBlock(blockName))
                         {
                             ErrPipeInf.Add(new string[4] { (ErrPipeInf.Count + 1).ToString(), pipe.Name, pipe.RowInd.ToString(), $"未找到{pipe.Attribute}对应的块文件" });
                             AddRowValue(ErrPipeInf.Last());
                         }
+                    }
+                    //try
+                    //{
+                    //    InsertCADBlock(blockName);
+                    //}
+                    //catch (Exception)
+                    //{
+                    //    ErrPipeInf.Add(new string[4] { (ErrPipeInf.Count + 1).ToString(), pipe.Name, pipe.RowInd.ToString(), $"未找到{pipe.Attribute}对应的块文件" });
+                    //    AddRowValue(ErrPipeInf.Last());
+                    //}
                 }
                 else
                 {
@@ -677,13 +703,19 @@ namespace AutoPipelines
         /// 从外部文件插入块参照
         /// </summary>
         /// <param name="blockName"></param>
-        internal void InsertCADBlock(string blockName)
+        internal bool InsertCADBlock(string blockName)
         {
-            string blockFilePathName = Path.Combine(Application.StartupPath,"AutoPipelines",
-                                                    "bin","Release","CADBlocks", blockName + ".dwg");
-            var sourceDb = new Database(false, false);
-            sourceDb.ReadDwgFile(blockFilePathName, FileShare.Read, true, "");
-            CadDatabase.Insert(blockName, sourceDb, true);
+            string blockFilePathName = Path.Combine(Application.StartupPath, "AutoPipelines",
+                                                    "bin", "Release", "CADBlocks", blockName + ".dwg");
+            if (File.Exists(blockFilePathName))
+            {
+                var sourceDb = new Database(false, false);
+                sourceDb.ReadDwgFile(blockFilePathName, FileShare.Read, true, "");
+                CadDatabase.Insert(blockName, sourceDb, true);
+                return true;
+            }
+            else
+                return false;
         }
 
         /// <summary>
@@ -709,5 +741,6 @@ namespace AutoPipelines
                     break;
             }
         }
+
     }
 }

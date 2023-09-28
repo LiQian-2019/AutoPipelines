@@ -40,7 +40,7 @@ namespace AutoPipelines
                 tabFileTxtBox.Text = ofd.FileName;
                 AutoPipe.TabFilePathName = tabFileTxtBox.Text;
                 AutoPipe.ReadPropertyTab();
-                toolStripStatusLabel1.Text = "属性表读取完成。";
+                toolStripStatusLabel1.Text = $"属性表读取完成，共读取{AutoPipe.RawPipeTable.Count}个管点。";
                 checkTabBtn.Enabled = true;
                 executeDrawBtn.Enabled = false;
             }
@@ -90,7 +90,7 @@ namespace AutoPipelines
             }
             AutoPipe.InputConfigPara(this);
             AutoPipe.DrawPipes();
-            toolStripStatusLabel1.Text = "管线图绘制完毕。";
+            toolStripStatusLabel1.Text = $"管线图绘制完毕，共绘制{AutoPipe.PipeTable.Count}个管点。";
             toolStripProgressBar1.Value = 0;
         }
 
